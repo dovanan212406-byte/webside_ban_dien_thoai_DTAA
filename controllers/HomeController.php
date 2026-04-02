@@ -10,20 +10,25 @@ class HomeController
 
     public function __construct()
     {
-        // $this->modelSanPham = new SanPham();
-        // $this->modelTaiKhoan = new TaiKhoan();
-        // $this->modelGioHang = new GioHang();
-        // $this->modelDonHang = new DonHang();
+        $this->modelSanPham = new SanPham();
+        $this->modelTaiKhoan = new TaiKhoan();
+        $this->modelGioHang = new GioHang();
+        $this->modelDonHang = new DonHang();
     }
 
-    // public function home()
-    // {
-    //     $listSanPham = $this->modelSanPham->getAllSanPham();
-        // require_once './views/home.php';
-    // }
+    /** Trang mặc định khi mở / — cùng logic với trangchu. */
+    public function home()
+    {
+        $this->trangchu();
+    }
+
     public function trangchu()
     {
-        echo "day la trang chu";
+        $listSanPham = $this->modelSanPham->getAllSanPham();
+        if (!is_array($listSanPham)) {
+            $listSanPham = [];
+        }
+        require_once './views/home.php';
     }
 
     // public function chiTietSanPham()
@@ -43,41 +48,176 @@ class HomeController
     //     }
     // }
 
-    // public function formLogin()
-    // {
-    //     require_once './views/auth/formLogin.php';
-    //     deleteSessionError();
-    // }
+    public function formLogin()
+    {
+        require_once './views/auth/formLogin.php';
+        if (!empty($_SESSION['client_auth_login_flash'])) {
+            unset($_SESSION['client_auth_login_flash'], $_SESSION['client_auth_login_error']);
+        }
+    }
 
-    // public function postLogin()
-    // {
-    //     if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    //         $email = $_POST['email'] ?? '';
-    //         $password = $_POST['password'] ?? '';
+    public function postLogin()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '?act=login');
+            exit();
+        }
 
-    //         $result = $this->modelTaiKhoan->checkLogin($email, $password);
+        $email = strtolower(trim($_POST['email'] ?? ''));
+        $password = $_POST['password'] ?? '';
 
-    //         // Nếu đăng nhập thành công → $result sẽ là email
-    //         if ($result == $email) {
-    //             // Lấy lại thông tin user để lưu vào session
-    //             $sql = "SELECT * FROM tai_khoans WHERE email = :email LIMIT 1";
-    //             $stmt = $this->modelTaiKhoan->conn->prepare($sql);
-    //             $stmt->execute(['email' => $email]);
-    //             $userData = $stmt->fetch();
+        $result = $this->modelTaiKhoan->checkLogin($email, $password);
 
-    //             $_SESSION['user_client'] = $userData;
+        if ($result === $email && $email !== '') {
+            $sql = 'SELECT * FROM users WHERE LOWER(TRIM(email)) = :email LIMIT 1';
+            $stmt = $this->modelTaiKhoan->conn->prepare($sql);
+            $stmt->execute([':email' => $email]);
+            $userData = $stmt->fetch();
+            if ($userData) {
+                unset($userData['password']);
+                $userData['ho_ten'] = $userData['full_name'] ?? '';
+                $userData['so_dien_thoai'] = $userData['phone'] ?? '';
+                $userData['dia_chi'] = $userData['address'] ?? '';
+                $userData['chuc_vu_id'] = isset($userData['role_id']) ? (int) $userData['role_id'] : null;
+                $userData['trang_thai'] = isset($userData['status']) ? (int) $userData['status'] : null;
+            }
 
-    //             header("Location: " . BASE_URL);
-    //             exit();
-    //         }
+            $_SESSION['user_client'] = $userData;
 
-    //         // Nếu thất bại → $result là chuỗi báo lỗi
-    //         $_SESSION['error'] = $result;
-    //         $_SESSION['flash'] = true;
-    //         header("Location: " . BASE_URL . '?act=login');
-    //         exit();
-    //     }
-    // }
+            $cookiePath = parse_url(BASE_URL, PHP_URL_PATH) ?: '/';
+            $cookiePath = rtrim($cookiePath, '/') . '/';
+            if (!empty($_POST['remember'])) {
+                setcookie('client_remember_email', $email, [
+                    'expires' => time() + 30 * 86400,
+                    'path' => $cookiePath,
+                    'httponly' => true,
+                    'samesite' => 'Lax',
+                ]);
+            } else {
+                setcookie('client_remember_email', '', [
+                    'expires' => time() - 3600,
+                    'path' => $cookiePath,
+                    'httponly' => true,
+                    'samesite' => 'Lax',
+                ]);
+            }
+
+            header('Location: ' . BASE_URL);
+            exit();
+        }
+
+        $_SESSION['client_auth_login_error'] = is_string($result) ? $result : 'Đăng nhập thất bại, vui lòng thử lại.';
+        $_SESSION['client_auth_login_flash'] = true;
+        header('Location: ' . BASE_URL . '?act=login');
+        exit();
+    }
+
+    public function logout()
+    {
+        unset($_SESSION['user_client']);
+        header('Location: ' . BASE_URL);
+        exit();
+    }
+
+    public function formRegister()
+    {
+        require_once './views/auth/formRegister.php';
+        unset($_SESSION['client_auth_register_errors'], $_SESSION['old_dang_ky']);
+    }
+
+    public function postRegister()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . BASE_URL . '?act=dang-ky');
+            exit();
+        }
+
+        $ho_ten = trim($_POST['ho_ten'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $password_confirm = $_POST['password_confirm'] ?? '';
+        $dong_y = isset($_POST['dong_y_dieu_khoan']) && $_POST['dong_y_dieu_khoan'] === '1';
+
+        $errors = [];
+        if ($ho_ten === '') {
+            $errors[] = 'Vui lòng nhập họ tên.';
+        }
+        if (!$dong_y) {
+            $errors[] = 'Bạn cần đồng ý điều khoản dịch vụ và chính sách bảo mật.';
+        }
+        if (strlen($password) < 6) {
+            $errors[] = 'Mật khẩu tối thiểu 6 ký tự.';
+        }
+        if ($password !== $password_confirm) {
+            $errors[] = 'Xác nhận mật khẩu không khớp.';
+        }
+
+        $email = strtolower(trim($_POST['email'] ?? ''));
+        $so_dien_thoai = preg_replace('/\D/', '', (string) ($_POST['so_dien_thoai'] ?? ''));
+        $dia_chi = '';
+
+        if ($so_dien_thoai === '') {
+            $errors[] = 'Vui lòng nhập số điện thoại.';
+        } elseif (strlen($so_dien_thoai) < 9 || strlen($so_dien_thoai) > 10) {
+            $errors[] = 'Số điện thoại phải 9–10 chữ số (VD: 0369389330).';
+        }
+
+        if ($email === '') {
+            $errors[] = 'Vui lòng nhập email.';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Email không hợp lệ.';
+        }
+
+        if ($email !== '' && $this->modelTaiKhoan->emailDaTonTai($email)) {
+            $errors[] = 'Email này đã được sử dụng.';
+        }
+
+        if (!empty($errors)) {
+            $_SESSION['client_auth_register_errors'] = $errors;
+            $_SESSION['old_dang_ky'] = $_POST;
+            header('Location: ' . BASE_URL . '?act=dang-ky');
+            exit();
+        }
+
+        $ok = $this->modelTaiKhoan->dangKyKhach($ho_ten, $email, $so_dien_thoai, $password, $dia_chi);
+
+        if ($ok) {
+            header('Location: ' . BASE_URL . '?act=login&registered=1');
+            exit();
+        }
+
+        $_SESSION['client_auth_register_errors'] = ['Không thể tạo tài khoản. Kiểm tra kết nối CSDL hoặc bảng users (full_name, email, phone, address, password, role_id, status).'];
+        $_SESSION['old_dang_ky'] = $_POST;
+        header('Location: ' . BASE_URL . '?act=dang-ky');
+        exit();
+    }
+
+    public function gioHang()
+    {
+        $chiTietGioHang = [];
+        if (!empty($_SESSION['user_client']['email'])) {
+            $user = $this->modelTaiKhoan->getTaiKhoanFormEmail($_SESSION['user_client']['email']);
+            if ($user && !empty($user['id'])) {
+                try {
+                    $gioHang = $this->modelGioHang->getGioHangFromUser($user['id']);
+                    if (!$gioHang) {
+                        $gioHangId = $this->modelGioHang->addGioHang($user['id']);
+                        if ($gioHangId) {
+                            $gioHang = ['id' => $gioHangId];
+                        }
+                    }
+                    if (!empty($gioHang['id'])) {
+                        $detail = $this->modelGioHang->getDetailGioHang($gioHang['id']);
+                        if (is_array($detail)) {
+                            $chiTietGioHang = $detail;
+                        }
+                    }
+                } catch (Throwable $e) {
+                    $chiTietGioHang = [];
+                }
+            }
+        }
+        require_once './views/gioHang.php';
+    }
 
     // public function addGioHang()
     // {

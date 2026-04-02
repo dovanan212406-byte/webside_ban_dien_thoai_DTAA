@@ -30,8 +30,11 @@ match ($act) {
     'lich-su-mua-hang'=>(new HomeController())->lichSuMuaHang(),
     'chi-tiet-mua-hang'=>(new HomeController())->chiTietMuaHang(),
     'huy-don-hang'=>(new HomeController())->huyDonHang(),
-    //route login
+    // Đăng nhập / đăng ký khách (giao diện riêng)
     'login'=>(new HomeController())->formLogin(),
     'check-login'=>(new HomeController())->postLogin(),
+    'dang-ky'=>(new HomeController())->formRegister(),
+    'check-dang-ky'=>(new HomeController())->postRegister(),
+    'dang-xuat'=>(new HomeController())->logout(),
     
 };

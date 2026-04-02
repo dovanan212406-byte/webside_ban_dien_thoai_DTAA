@@ -109,16 +109,25 @@ class AdminTaiKhoan
 
     // 7. Kiểm tra đăng nhập (Sử dụng password_verify để bảo mật)
   // Trong AdminTaiKhoan.php
-public function checkLogin($email, $password) {
-    $sql = "SELECT * FROM users WHERE email = :email";
+public function checkLogin($emailOrPhone, $password) {
+    $v = trim((string) $emailOrPhone);
+    $sql = "SELECT * FROM users WHERE email = :v1 OR phone = :v2";
     $stmt = $this->conn->prepare($sql);
-    $stmt->execute([':email' => $email]);
+    $stmt->execute([':v1' => $v, ':v2' => $v]);
     $user = $stmt->fetch();
 
-    if ($user && $password == $user['password']) { // So sánh pass text thuần
-        return $user; // Trả về mảng chứa id, email, full_name...
+    if (!$user) {
+        return false;
     }
-    return false;
+    $stored = $user['password'] ?? '';
+    $ok = false;
+    if ($stored !== '' && (password_verify($password, $stored) || hash_equals($stored, $password))) {
+        $ok = true;
+    }
+    if ($ok) {
+        return $user;
+    }
+    return "Email/số điện thoại hoặc mật khẩu không đúng.";
 }
 
     // 8. Lấy thông tin tài khoản bằng Email (Dùng cho Session)

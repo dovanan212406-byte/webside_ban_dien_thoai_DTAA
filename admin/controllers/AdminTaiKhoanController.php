@@ -22,8 +22,8 @@ class AdminTaiKhoanController
             header("Location: " . BASE_URL_ADMIN);
             exit();
         }
-        // Sửa: Theo ảnh file là formLogin.php
-        require_once './views/auth/formLogin.php'; 
+        $authTab = 'login';
+        require_once './views/auth/auth.php';
     }
 
     public function postLoginAdmin()
@@ -34,7 +34,8 @@ class AdminTaiKhoanController
 
             $user = $this->modelTaiKhoan->checkLogin($email, $password);
 
-            if (is_array($user) && $user['role_id'] == 1) { 
+            // checkLogin trả: false=ko có tk | string=sai mk | array=đúng mk
+            if (is_array($user) && (int) $user['role_id'] === 1) {
                 $_SESSION['user_admin'] = [
                     'id' => $user['id'],
                     'email' => $user['email'],
@@ -42,11 +43,23 @@ class AdminTaiKhoanController
                 ];
                 header("Location: " . BASE_URL_ADMIN);
                 exit();
-            } else {
-                $_SESSION['error'] = is_string($user) ? $user : "Email hoặc mật khẩu không chính xác!";
+            }
+
+            if (is_array($user) && (int) $user['role_id'] !== 1) {
+                $_SESSION['error'] = 'Tài khoản này không có quyền truy cập khu vực quản trị. Vui lòng đăng nhập bằng tài khoản Admin hoặc đăng ký tài khoản quản trị mới.';
                 header("Location: " . BASE_URL_ADMIN . '?act=login-admin');
                 exit();
             }
+
+            if (is_string($user)) {
+                $_SESSION['error'] = $user;
+            } elseif ($user === false) {
+                $_SESSION['error'] = 'Không tìm thấy tài khoản với email hoặc số điện thoại này.';
+            } else {
+                $_SESSION['error'] = 'Email hoặc mật khẩu không chính xác!';
+            }
+            header("Location: " . BASE_URL_ADMIN . '?act=login-admin');
+            exit();
         }
     }
 
@@ -58,25 +71,44 @@ class AdminTaiKhoanController
     }
 
     public function formRegisterAdmin() {
-        // Sửa: Theo ảnh file là formRegister.php
-        require_once './views/auth/formRegister.php'; 
+        if (isset($_SESSION['user_admin'])) {
+            header("Location: " . BASE_URL_ADMIN);
+            exit();
+        }
+        $authTab = 'register';
+        require_once './views/auth/auth.php';
         unset($_SESSION['error']);
         unset($_SESSION['old_register_admin']);
     }
 
     public function postRegisterAdmin() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $ho_ten = $_POST['ho_ten'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $so_dien_thoai = $_POST['so_dien_thoai'] ?? '';
+            $ho_ten = trim($_POST['ho_ten'] ?? '');
             $password = $_POST['password'] ?? '';
             $password_confirm = $_POST['password_confirm'] ?? '';
+            $dieu_khoan = isset($_POST['dieu_khoan']) && $_POST['dieu_khoan'] === '1';
+
+            $email = trim($_POST['email'] ?? '');
+            $so_dien_thoai = trim($_POST['so_dien_thoai'] ?? '');
 
             $errors = [];
-            if (empty($ho_ten)) $errors[] = "Họ tên không được để trống.";
-            if (empty($email)) $errors[] = "Email không được để trống.";
-            if (strlen($password) < 6) $errors[] = "Mật khẩu phải từ 6 ký tự.";
-            if ($password !== $password_confirm) $errors[] = "Xác nhận mật khẩu không khớp.";
+            if (empty($ho_ten)) {
+                $errors[] = "Họ tên không được để trống.";
+            }
+            if (!$dieu_khoan) {
+                $errors[] = "Vui lòng đồng ý điều khoản dịch vụ.";
+            }
+            if (strlen($password) < 6) {
+                $errors[] = "Mật khẩu phải từ 6 ký tự.";
+            }
+            if ($password !== $password_confirm) {
+                $errors[] = "Xác nhận mật khẩu không khớp.";
+            }
+            if ($email === '') {
+                $errors[] = "Email không được để trống.";
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = "Email không hợp lệ.";
+            }
 
             if (empty($errors)) {
                 $hash_pass = password_hash($password, PASSWORD_BCRYPT);

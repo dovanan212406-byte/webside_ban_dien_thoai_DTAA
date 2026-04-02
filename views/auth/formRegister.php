@@ -1,3 +1,3 @@
 <?php
-$clientAuthTab = 'login';
+$clientAuthTab = 'register';
 require __DIR__ . '/auth-split-client.php';

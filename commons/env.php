@@ -3,10 +3,10 @@
 // Biến môi trường, dùng chung toàn hệ thống
 // Khai báo dưới dạng HẰNG SỐ để không phải dùng $GLOBALS
 
-define('BASE_URL'       , 'http://localhost/webside_ban_dien_thoai_DTAA/'); // Đường dẫn gốc của ứng dụng
+// Phải khớp thư mục trong www (ví dụ: webise_ban_dien_thoai_DTAA/webside_ban_dien_thoai_DTAA/)
+define('BASE_URL', 'http://localhost/webise_ban_dien_thoai_DTAA/webside_ban_dien_thoai_DTAA/');
 
-//đường dẫn vào đường admin
-define('BASE_URL_ADMIN'       , 'http://localhost/webside_ban_dien_thoai_DTAA/admin/');
+define('BASE_URL_ADMIN', 'http://localhost/webise_ban_dien_thoai_DTAA/webside_ban_dien_thoai_DTAA/admin/');
 
 define('DB_HOST'    , 'localhost');
 define('DB_PORT'    , 3306);
