@@ -166,13 +166,13 @@
                                             <figure class="product-thumb">
                                                 <a
                                                     href="<?= BASE_URL . '?act=chi-tiet-san-pham&id_san_pham=' . $sanPham['id']; ?>">
-                                                    <img class="pri-img" src="<?= $sanPham['hinh_anh'] ?>" alt="product">
-                                                    <img class="sec-img" src="<?= $sanPham['hinh_anh'] ?>"
+                                                    <img class="pri-img" src="<?= $sanPham['image'] ?>" alt="product">
+                                                    <img class="sec-img" src="<?= $sanPham['image'] ?>"
                                                         alt="product">
                                                 </a>
                                                 <div class="product-badge">
                                                     <?php
-                                                    $ngayNhap = new DateTime($sanPham['ngay_nhap']);
+                                                    $ngayNhap = new DateTime($sanPham['import_date']);
                                                     $ngayHienTai = new DateTime();
                                                     $tinhNgay = $ngayHienTai->diff(targetObject: $ngayNhap);
 
@@ -186,7 +186,7 @@
                                                     ?>
 
                                                     <?php
-                                                    if ($sanPham['gia_khuyen_mai']) {
+                                                    if ($sanPham['discount_price']) {
                                                         ?>
 
                                                         <div class="product-label discount">
@@ -205,17 +205,17 @@
 
                                                 <h6 class="product-name">
                                                     <a
-                                                        href="<?= BASE_URL . '?act=chi-tiet-san-pham&id_san_pham=' . $sanPham['id']; ?>"><?= $sanPham['ten_san_pham'] ?></a>
+                                                        href="<?= BASE_URL . '?act=chi-tiet-san-pham&id_san_pham=' . $sanPham['id']; ?>"><?= $sanPham['name'] ?></a>
                                                 </h6>
                                                 <div class="price-box">
-                                                    <?php if ($sanPham['gia_khuyen_mai']) { ?>
+                                                    <?php if ($sanPham['discount_price']) { ?>
                                                         <span
-                                                            class="price-regular"><?= formatPrice($sanPham['gia_khuyen_mai']) . 'VNĐ'; ?></span>
+                                                            class="price-regular"><?= formatPrice($sanPham['discount_price']) . 'VNĐ'; ?></span>
                                                         <span
-                                                            class="price-old"><del><?= formatPrice($sanPham['gia_san_pham']) . 'VNĐ'; ?></del></span>
+                                                            class="price-old"><del><?= formatPrice($sanPham['price']) . 'VNĐ'; ?></del></span>
                                                     <?php } else { ?>
                                                         <span
-                                                            class="price-regular"><?= formatPrice($sanPham['gia_san_pham']) . 'VNĐ'; ?></span>
+                                                            class="price-regular"><?= formatPrice($sanPham['price']) . 'VNĐ'; ?></span>
                                                     <?php } ?>
                                                 </div>
                                             </div>
@@ -252,7 +252,7 @@
 
                                 <figure class="banner-statistics">
                                     <a href="<?= BASE_URL . '?act=chi-tiet-san-pham&id_san_pham=' . $sanPham['id']; ?>">
-                                        <img src="<?= $sanPham['hinh_anh'] ?>">
+                                        <img src="<?= $sanPham['image'] ?>">
                                     </a>
 
                                 </figure>
@@ -266,7 +266,7 @@
 
                             <figure class="banner-statistics">
                                 <a href="#">
-                                    <img src="<?= $sanPham['hinh_anh'] ?>" alt="product banner">
+                                    <img src="<?= $sanPham['image'] ?>" alt="product banner">
                                 </a>
                                 <div class="banner-content banner-content_style2">
                                     <h5 class="banner-text3"><a href="#">Adidas</a></h5>
@@ -310,12 +310,12 @@
                             <div class="product-item">
                                 <figure class="product-thumb">
                                     <a href="<?= BASE_URL . '?act=chi-tiet-san-pham&id_san_pham=' . $sanPham['id']; ?>">
-                                        <img class="pri-img" src="<?= $sanPham['hinh_anh'] ?>" alt="product">
-                                        <img class="sec-img" src="<?= $sanPham['hinh_anh'] ?>" alt="product">
+                                        <img class="pri-img" src="<?= $sanPham['image'] ?>" alt="product">
+                                        <img class="sec-img" src="<?= $sanPham['image'] ?>" alt="product">
                                     </a>
                                     <div class="product-badge">
                                         <?php
-                                        $ngayNhap = new DateTime($sanPham['ngay_nhap']);
+                                        $ngayNhap = new DateTime($sanPham['import_date']);
                                         $ngayHienTai = new DateTime();
                                         $tinhNgay = $ngayHienTai->diff(targetObject: $ngayNhap);
 
@@ -329,7 +329,7 @@
                                         ?>
 
                                         <?php
-                                        if ($sanPham['gia_khuyen_mai']) {
+                                        if ($sanPham['discount_price']) {
                                             ?>
 
                                             <div class="product-label discount">
@@ -348,17 +348,17 @@
 
                                     <h6 class="product-name">
                                         <a
-                                            href="<?= BASE_URL . '?act=chi-tiet-san-pham&id_san_pham=' . $sanPham['id']; ?>"><?= $sanPham['ten_san_pham'] ?></a>
+                                            href="<?= BASE_URL . '?act=chi-tiet-san-pham&id_san_pham=' . $sanPham['id']; ?>"><?= $sanPham['name'] ?></a>
                                     </h6>
                                     <div class="price-box">
-                                        <?php if ($sanPham['gia_khuyen_mai']) { ?>
+                                        <?php if ($sanPham['discount_price']) { ?>
                                             <span
-                                                class="price-regular"><?= formatPrice($sanPham['gia_khuyen_mai']) . 'VNĐ'; ?></span>
+                                                class="price-regular"><?= formatPrice($sanPham['discount_price']) . 'VNĐ'; ?></span>
                                             <span
-                                                class="price-old"><del><?= formatPrice($sanPham['gia_san_pham']) . 'VNĐ'; ?></del></span>
+                                                class="price-old"><del><?= formatPrice($sanPham['price']) . 'VNĐ'; ?></del></span>
                                         <?php } else { ?>
                                             <span
-                                                class="price-regular"><?= formatPrice($sanPham['gia_san_pham']) . 'VNĐ'; ?></span>
+                                                class="price-regular"><?= formatPrice($sanPham['price']) . 'VNĐ'; ?></span>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -467,16 +467,16 @@
                                         <div class="group-item">
                                             <div class="group-item-thumb">
                                                 <a href="product-details.html">
-                                                    <img src="<?= $sanPham['hinh_anh']; ?>" alt="">
+                                                    <img src="<?= $sanPham['image']; ?>" alt="">
                                                 </a>
                                             </div>
                                             <div class="group-item-desc">
 
                                                 <h5 class="group-product-name"><a href="product-details.html">
 
-                                                        <?= $sanPham['ten_san_pham'] ?></a></h5>
+                                                        <?= $sanPham['name'] ?></a></h5>
                                                 <div class="price-box">
-                                                    <span class="price-regular"><?= $sanPham['gia_san_pham'] ?></span>
+                                                    <span class="price-regular"><?= $sanPham['price'] ?></span>
 
                                                 </div>
 
@@ -508,16 +508,16 @@
                                         <div class="group-item">
                                             <div class="group-item-thumb">
                                                 <a href="product-details.html">
-                                                    <img src="<?= $sanPham['hinh_anh']; ?>" alt="">
+                                                    <img src="<?= $sanPham['image']; ?>" alt="">
                                                 </a>
                                             </div>
                                             <div class="group-item-desc">
 
                                                 <h5 class="group-product-name"><a href="product-details.html">
 
-                                                        <?= $sanPham['ten_san_pham'] ?></a></h5>
+                                                        <?= $sanPham['name'] ?></a></h5>
                                                 <div class="price-box">
-                                                    <span class="price-regular"><?= $sanPham['gia_san_pham'];?><del><?= $sanPham['gia_khuyen_mai']; ?></span>
+                                                    <span class="price-regular"><?= $sanPham['price'];?><del><?= $sanPham['discount_price']; ?></span>
                                                 </div>
 
                                             </div>

@@ -63,15 +63,15 @@ class HomeController
             exit();
         }
 
-        $email = strtolower(trim($_POST['email'] ?? ''));
+        $identifier = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
-        $result = $this->modelTaiKhoan->checkLogin($email, $password);
+        $result = $this->modelTaiKhoan->checkLoginClient($identifier, $password);
 
-        if ($result === $email && $email !== '') {
+        if (is_string($result) && str_contains($result, '@')) {
             $sql = 'SELECT * FROM users WHERE LOWER(TRIM(email)) = :email LIMIT 1';
             $stmt = $this->modelTaiKhoan->conn->prepare($sql);
-            $stmt->execute([':email' => $email]);
+            $stmt->execute([':email' => $result]);
             $userData = $stmt->fetch();
             if ($userData) {
                 unset($userData['password']);
@@ -87,7 +87,7 @@ class HomeController
             $cookiePath = parse_url(BASE_URL, PHP_URL_PATH) ?: '/';
             $cookiePath = rtrim($cookiePath, '/') . '/';
             if (!empty($_POST['remember'])) {
-                setcookie('client_remember_email', $email, [
+                setcookie('client_remember_email', $result, [
                     'expires' => time() + 30 * 86400,
                     'path' => $cookiePath,
                     'httponly' => true,
@@ -151,7 +151,6 @@ class HomeController
             $errors[] = 'Xác nhận mật khẩu không khớp.';
         }
 
-        $email = strtolower(trim($_POST['email'] ?? ''));
         $so_dien_thoai = preg_replace('/\D/', '', (string) ($_POST['so_dien_thoai'] ?? ''));
         $dia_chi = '';
 
@@ -161,14 +160,15 @@ class HomeController
             $errors[] = 'Số điện thoại phải 9–10 chữ số (VD: 0369389330).';
         }
 
-        if ($email === '') {
-            $errors[] = 'Vui lòng nhập email.';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $email = strtolower(trim($_POST['email'] ?? ''));
+        if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'Email không hợp lệ.';
         }
-
         if ($email !== '' && $this->modelTaiKhoan->emailDaTonTai($email)) {
             $errors[] = 'Email này đã được sử dụng.';
+        }
+        if ($so_dien_thoai !== '' && $this->modelTaiKhoan->soDienThoaiDaTonTai($so_dien_thoai)) {
+            $errors[] = 'Số điện thoại này đã được sử dụng.';
         }
 
         if (!empty($errors)) {

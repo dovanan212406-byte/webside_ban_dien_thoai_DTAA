@@ -16,16 +16,16 @@
                         <li class="minicart-item">
                             <div class="minicart-thumb">
                                 <a href="product-details.html">
-                                    <img src="<?=$sanPham['hinh_anh']?>" alt="product">
+                                    <img src="<?=$sanPham['image']?>" alt="product">
                                 </a>
                             </div>
                             <div class="minicart-content">
                                 <h3 class="product-name">
-                                    <a href="product-details.html"><?=$sanPham['ten_san_pham']?></a>
+                                    <a href="product-details.html"><?=$sanPham['name']?></a>
                                 </h3>
                                 <p>
-                                    <span class="cart-quantity"> <?=$sanPham['so_luong']?><strong>&times;</strong></span>
-                                    <span class="cart-price"><?=$sanPham['gia_san_pham']?></span>
+                                    <span class="cart-quantity"> <?=$sanPham['quantity']?><strong>&times;</strong></span>
+                                    <span class="cart-price"><?=$sanPham['price']?></span>
                                 </p>
                             </div>
                             <button class="minicart-remove"><i class="pe-7s-close"></i></button>
@@ -33,16 +33,16 @@
                         <li class="minicart-item">
                             <div class="minicart-thumb">
                                 <a href="product-details.html">
-                                    <img src="<?=$sanPham['hinh_anh']?>" alt="product">
+                                    <img src="<?=$sanPham['image']?>" alt="product">
                                 </a>
                             </div>
                             <div class="minicart-content">
                                 <h3 class="product-name">
-                                    <a href="product-details.html"><?=$sanPham['ten_san_pham']?></a>
+                                    <a href="product-details.html"><?=$sanPham['name']?></a>
                                 </h3>
                                 <p>
-                                    <span class="cart-quantity"> <?=$sanPham['so_luong']?><strong>&times;</strong></span>
-                                    <span class="cart-price"><?=$sanPham['gia_san_pham']?></span>
+                                    <span class="cart-quantity"> <?=$sanPham['quantity']?><strong>&times;</strong></span>
+                                    <span class="cart-price"><?=$sanPham['price']?></span>
                                 </p>
                             </div>
                             <button class="minicart-remove"><i class="pe-7s-close"></i></button>

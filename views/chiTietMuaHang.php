@@ -45,11 +45,11 @@
                                     </tr>
                                     <?php foreach($chiTietDonHang as $item) : ?>
                                         <tr>
-                                            <td><img class="img-fluid" src="<?= BASE_URL . $item['hinh_anh'] ?>" alt="Product" width="100px" alt=""></td>
-                                            <td><?=$item['ten_san_pham']?></td>
-                                            <td><?=formatPrice($item['don_gia'])?></td>
-                                            <td><?=$item['so_luong']?></td>
-                                            <td><?=formatPrice($item['thanh_tien'])?></td>
+                                            <td><img class="img-fluid" src="<?= BASE_URL . $item['image'] ?>" alt="Product" width="100px" alt=""></td>
+                                            <td><?=$item['name']?></td>
+                                            <td><?=formatPrice($item['price'])?></td>
+                                            <td><?=$item['quantity']?></td>
+                                            <td><?=formatPrice($item['total_price'])?></td>
                                         </tr>
                                     <?php endforeach;?>
                                 </tbody>

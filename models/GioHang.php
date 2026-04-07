@@ -11,10 +11,10 @@ class GioHang
     public function getGioHangFromUser($id)
     {
         try {
-            $sql = 'SELECT * FROM gio_hangs WHERE tai_khoan_id = :tai_khoan_id';
+            $sql = 'SELECT * FROM carts WHERE user_id = :user_id';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':tai_khoan_id' => $id]);
+            $stmt->execute([':user_id' => $id]);
 
             return $stmt->fetch();
         } catch (Exception $e) {
@@ -25,14 +25,13 @@ class GioHang
     public function getDetailGioHang($id)
     {
         try {
-            $sql = 'SELECT chi_tiet_gio_hangs.*, san_phams.ten_san_pham, san_phams.hinh_anh,san_phams.gia_san_pham,san_phams.gia_khuyen_mai
-            FROM chi_tiet_gio_hangs
-            INNER JOIN san_phams ON chi_tiet_gio_hangs.san_pham_id = san_phams.id
-            
-             WHERE chi_tiet_gio_hangs.gio_hang_id = :gio_hang_id';
+            $sql = 'SELECT cart_items.*, products.name, products.image, products.price, products.discount_price
+            FROM cart_items
+            INNER JOIN products ON cart_items.product_id = products.id
+             WHERE cart_items.cart_id = :cart_id';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':gio_hang_id' => $id]);
+            $stmt->execute([':cart_id' => $id]);
 
             return $stmt->fetchAll();
         } catch (Exception $e) {
@@ -43,10 +42,10 @@ class GioHang
     public function addGioHang($id)
     {
         try {
-            $sql = 'INSERT INTO gio_hangs (tai_khoan_id)VALUE (:id)';
+            $sql = 'INSERT INTO carts (user_id) VALUES (:user_id)';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':id' => $id]);
+            $stmt->execute([':user_id' => $id]);
 
             return $this->conn->lastInsertId();
         } catch (Exception $e) {
@@ -54,16 +53,16 @@ class GioHang
         }
     }
 
-    public function updateSoLuong($gio_hang_id, $san_pham_id, $so_luong)
+    public function updateSoLuong($cart_id, $product_id, $quantity)
     {
         try {
-            $sql = 'UPDATE chi_tiet_gio_hangs
-            SET so_luong = :so_luong
-            WHERE gio_hang_id = :gio_hang_id AND san_pham_id = :san_pham_id
+            $sql = 'UPDATE cart_items
+            SET quantity = :quantity
+            WHERE cart_id = :cart_id AND product_id = :product_id
             ';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':gio_hang_id' => $gio_hang_id, ':san_pham_id' => $san_pham_id, ':so_luong' => $so_luong]);
+            $stmt->execute([':cart_id' => $cart_id, ':product_id' => $product_id, ':quantity' => $quantity]);
 
             return true;
         } catch (Exception $e) {
@@ -72,44 +71,43 @@ class GioHang
     }
 
 
-    public function addDetailGioHang($gio_hang_id, $san_pham_id, $so_luong)
+    public function addDetailGioHang($cart_id, $product_id, $quantity)
     {
         try {
-            $sql = 'INSERT INTO chi_tiet_gio_hangs (gio_hang_id, san_pham_id, so_luong)
-            VALUE (:gio_hang_id, :san_pham_id, :so_luong)
+            $sql = 'INSERT INTO cart_items (cart_id, product_id, quantity)
+            VALUES (:cart_id, :product_id, :quantity)
             ';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':gio_hang_id' => $gio_hang_id, ':san_pham_id' => $san_pham_id, ':so_luong' => $so_luong]);
+            $stmt->execute([':cart_id' => $cart_id, ':product_id' => $product_id, ':quantity' => $quantity]);
 
             return true;
         } catch (Exception $e) {
             echo "Lỗi: " . $e->getMessage();
         }
     }
-    public function clearDetailGioHang($gio_hang_id)
+    public function clearDetailGioHang($cart_id)
     {
         try {
-            $sql = 'DELETE FROM chi_tiet_gio_hangs
-            WHERE gio_hang_id = :gio_hang_id ';
+            $sql = 'DELETE FROM cart_items
+            WHERE cart_id = :cart_id ';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':gio_hang_id' => $gio_hang_id]);
+            $stmt->execute([':cart_id' => $cart_id]);
 
             return true;
         } catch (Exception $e) {
             echo "Lỗi: " . $e->getMessage();
         }
     }
-    public function clearGioHang($taikhoanId)
+    public function clearGioHang($userId)
     {
         try {
-            $sql = 'DELETE FROM gio_hangs
-            WHERE tai_khoan_id = :tai_khoan_id ';
-           
+            $sql = 'DELETE FROM carts
+            WHERE user_id = :user_id ';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':tai_khoan_id' => $taikhoanId]);
+            $stmt->execute([':user_id' => $userId]);
 
             return true;
         } catch (Exception $e) {

@@ -44,7 +44,7 @@
                 $roleName = ($thongTin['chuc_vu_id'] ?? $thongTin['role_id'] ?? 0) == 1 ? 'Quản trị viên' : 'Nhân viên';
             ?>
             <div class="avatar-container w-48 h-48 rounded-full overflow-hidden mb-6">
-                <img src="<?= BASE_URL . ($thongTin['anh_dai_dien'] ?? '') ?>" 
+                <img src="<?= BASE_URL . ($thongTin['avatar'] ?? '') ?>" 
                      class="w-full h-full object-cover"
                      onerror="this.src='https://ui-avatars.com/api/?name=<?= urlencode($displayName) ?>&size=200&background=667eea&color=fff'">
             </div>

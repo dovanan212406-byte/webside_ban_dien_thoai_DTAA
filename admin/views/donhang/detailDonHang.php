@@ -56,7 +56,7 @@
             <div class="flex items-center gap-4">
                <img src="<?= BASE_URL . $sp['image'] ?>" class="w-12 h-12 object-cover rounded-md shadow-sm">
                <div>
-                  <p class="font-bold text-sm text-gray-800"><?= $sp['ten_san_pham'] ?></p>
+                  <p class="font-bold text-sm text-gray-800"><?= $sp['name'] ?></p>
                   <p class="text-xs text-gray-500"><?= number_format($sp['price'], 0, ',', '.') ?>đ x <?= $sp['quantity'] ?></p>
                </div>
             </div>

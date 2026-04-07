@@ -48,25 +48,25 @@
                                         ?>
                                         <tr>
                                             <td class="pro-thumbnail"><a href="#"><img class="img-fluid"
-                                                        src="<?= BASE_URL . $sanPham['hinh_anh'] ?>" alt="Product" /></a></td>
-                                            <td class="pro-title"><a href="#"><?= $sanPham['ten_san_pham'] ?></a></td>
+                                                        src="<?= BASE_URL . $sanPham['image'] ?>" alt="Product" /></a></td>
+                                            <td class="pro-title"><a href="#"><?= $sanPham['name'] ?></a></td>
                                             <td class="pro-price"><span>
-                                                    <?php if ($sanPham['gia_khuyen_mai']) { ?>
-                                                        <?= formatPrice($sanPham['gia_khuyen_mai']) ?>
+                                                    <?php if ($sanPham['discount_price']) { ?>
+                                                        <?= formatPrice($sanPham['discount_price']) ?>
                                                     <?php }else{ ?>
-                                                        <?= formatPrice($sanPham['gia_san_pham']) ?>
+                                                        <?= formatPrice($sanPham['price']) ?>
                                                     <?php }?>    
                                                 </span></td>
 
                                             <td class="pro-quantity">
-                                                <div class="pro-qty"><input type="text" value="<?=$sanPham['so_luong']?>"></div>
+                                                <div class="pro-qty"><input type="text" value="<?=$sanPham['quantity']?>"></div>
                                             </td>
                                             <td class="pro-subtotal"><span>
                                                         <?php
-                                                        if($sanPham['gia_khuyen_mai']) {
-                                                           $tong_tien=$sanPham['gia_khuyen_mai'] * $sanPham['so_luong'];
+                                                        if($sanPham['discount_price']) {
+                                                           $tong_tien=$sanPham['discount_price'] * $sanPham['quantity'];
                                                         } else {
-                                                            $tong_tien=$sanPham['gia_san_pham'] * $sanPham['so_luong'];
+                                                            $tong_tien=$sanPham['price'] * $sanPham['quantity'];
                                                         }
                                                           $tongGioHang += $tong_tien;
                                                          echo formatPrice($tong_tien);

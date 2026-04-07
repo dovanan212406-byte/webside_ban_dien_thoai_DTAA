@@ -88,14 +88,14 @@
                                             foreach ($chiTietGioHang as $key => $sanPham):
                                                 ?>
                                                 <tr>
-                                                    <td><a href=""><?= $sanPham['ten_san_pham'] ?>
-                                                            <strong>x<?= $sanPham['so_luong'] ?></strong></a>
+                                                    <td><a href=""><?= $sanPham['name'] ?>
+                                                            <strong>x<?= $sanPham['quantity'] ?></strong></a>
                                                     </td>
                                                     <td> <?php
-                                                    if ($sanPham['gia_khuyen_mai']) {
-                                                        $tong_tien = $sanPham['gia_khuyen_mai'] * $sanPham['so_luong'];
+                                                    if ($sanPham['discount_price']) {
+                                                        $tong_tien = $sanPham['discount_price'] * $sanPham['quantity'];
                                                     } else {
-                                                        $tong_tien = $sanPham['gia_san_pham'] * $sanPham['so_luong'];
+                                                        $tong_tien = $sanPham['price'] * $sanPham['quantity'];
                                                     }
                                                     $tongGioHang += $tong_tien;
                                                     echo formatPrice($tong_tien);

@@ -63,7 +63,7 @@ class AdminDonHang {
     // 4. Lấy danh sách sản phẩm thuộc đơn hàng (Dùng cho trang Detail)
     public function getListSpDonHang($id){
         try {
-            $sql = "SELECT order_items.*, products.name AS ten_san_pham, products.image
+            $sql = "SELECT order_items.*, products.name, products.image
                     FROM order_items 
                     INNER JOIN products ON order_items.product_id = products.id
                     WHERE order_items.order_id = :id";

@@ -8,9 +8,9 @@
 
     public function getAllSanPham() {
         try {
-            $sql = 'SELECT san_phams.*, danh_mucs.ten_danh_muc
-                    FROM san_phams
-                    INNER JOIN danh_mucs ON san_phams.danh_muc_id = danh_mucs.id';
+            $sql = 'SELECT products.*, categories.name as ten_danh_muc
+                    FROM products
+                    INNER JOIN categories ON products.category_id = categories.id';
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();
@@ -23,9 +23,9 @@
 
      public function getDetailSanPham($id){
     try {
-        $sql = "SELECT san_phams.*, danh_mucs.ten_danh_muc
-                    FROM san_phams
-                    INNER JOIN danh_mucs ON san_phams.danh_muc_id = danh_mucs.id WHERE san_phams.id = :id";
+        $sql = "SELECT products.*, categories.name as ten_danh_muc
+                    FROM products
+                    INNER JOIN categories ON products.category_id = categories.id WHERE products.id = :id";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':id' => $id]);
@@ -38,7 +38,7 @@
 
 public function getListAnhSanPham($id){
     try {
-        $sql = "SELECT * FROM hinh_anh_san_phams WHERE san_pham_id = :id";
+        $sql = "SELECT * FROM product_images WHERE product_id = :id";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':id' => $id]);
@@ -50,11 +50,11 @@ public function getListAnhSanPham($id){
 }
  public function getBinhLuanFormSanPham($id){
         try {
-            $sql = "SELECT binh_luans.*, san_phams.ten_san_pham, tai_khoans.anh_dai_dien
-        FROM binh_luans
-        INNER JOIN san_phams ON binh_luans.san_pham_id = san_phams.id
-        INNER JOIN tai_khoans ON binh_luans.tai_khoan_id = tai_khoans.id
-        WHERE binh_luans.tai_khoan_id = :id";
+            $sql = "SELECT reviews.*, products.name, users.avatar
+        FROM reviews
+        INNER JOIN products ON reviews.product_id = products.id
+        INNER JOIN users ON reviews.user_id = users.id
+        WHERE reviews.user_id = :id";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':id'=>$id]);
@@ -67,13 +67,13 @@ public function getListAnhSanPham($id){
 
     public function getListSanPhamDanhMuc($danh_muc_id) {
         try {
-            $sql = 'SELECT san_phams.*, danh_mucs.ten_danh_muc
-                    FROM san_phams
-                    INNER JOIN danh_mucs ON san_phams.danh_muc_id = danh_mucs.id 
-                     WHERE san_phams.danh_muc_id = ' . $danh_muc_id;
+            $sql = 'SELECT products.*, categories.name as ten_danh_muc
+                    FROM products
+                    INNER JOIN categories ON products.category_id = categories.id 
+                     WHERE products.category_id = :category_id';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
+            $stmt->execute([':category_id' => $danh_muc_id]);
 
             return $stmt->fetchAll();
         } catch (Exception $e) {
