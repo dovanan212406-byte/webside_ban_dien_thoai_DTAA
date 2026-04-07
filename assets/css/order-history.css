@@ -1,0 +1,304 @@
+/* DTAA — Lịch sử đơn hàng (danh sách) */
+:root {
+  --oh-purple: #6d28d9;
+  --oh-purple-soft: #ede9fe;
+  --oh-text: #1e1b4b;
+  --oh-muted: #64748b;
+  --oh-bg: #f5f3ff;
+  --oh-card: #ffffff;
+  --oh-border: #e9e5f5;
+  --oh-green: #059669;
+  --oh-green-bg: #ecfdf5;
+  --oh-red: #dc2626;
+  --oh-red-bg: #fef2f2;
+  --oh-amber: #d97706;
+  --oh-amber-bg: #fffbeb;
+  --oh-radius: 14px;
+  --oh-font: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
+}
+
+.oh-page {
+  font-family: var(--oh-font);
+  background: linear-gradient(180deg, var(--oh-bg) 0%, #fafafa 50%);
+  min-height: 50vh;
+  padding-bottom: 48px;
+}
+
+.oh-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 45% 30% at 85% 0%, rgba(167, 139, 250, 0.15), transparent 55%);
+  z-index: 0;
+}
+
+.oh-page .container {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+}
+
+.oh-toolbar {
+  margin-bottom: 22px;
+}
+
+.oh-toolbar h1 {
+  margin: 0 0 6px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--oh-text);
+  letter-spacing: -0.02em;
+}
+
+.oh-toolbar p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--oh-muted);
+}
+
+.oh-list {
+  background: var(--oh-card);
+  border: 1px solid var(--oh-border);
+  border-radius: var(--oh-radius);
+  box-shadow: 0 4px 24px rgba(109, 40, 217, 0.07);
+  overflow: hidden;
+}
+
+.oh-row {
+  display: grid;
+  gap: 14px 16px;
+  padding: 16px 18px;
+  align-items: center;
+  border-bottom: 1px solid #f1f0f9;
+}
+
+.oh-row:last-child {
+  border-bottom: none;
+}
+
+.oh-row--head {
+  display: none;
+  background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 14px 18px;
+  border-bottom: none;
+}
+
+@media (min-width: 992px) {
+  .oh-row--head {
+    display: grid;
+    grid-template-columns:
+      minmax(120px, 1.5fr)
+      minmax(100px, 0.85fr)
+      minmax(110px, auto)
+      minmax(100px, 1fr)
+      minmax(100px, 1fr)
+      minmax(140px, auto);
+    gap: 12px 16px;
+  }
+}
+
+.oh-card {
+  transition: background 0.15s;
+}
+
+.oh-card:hover {
+  background: #fafaff;
+}
+
+@media (min-width: 992px) {
+  .oh-card {
+    grid-template-columns:
+      minmax(120px, 1.5fr)
+      minmax(100px, 0.85fr)
+      minmax(110px, auto)
+      minmax(100px, 1fr)
+      minmax(100px, 1fr)
+      minmax(140px, auto);
+  }
+}
+
+.oh-cell-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--oh-muted);
+  margin-bottom: 4px;
+}
+
+@media (min-width: 992px) {
+  .oh-cell-label {
+    display: none;
+  }
+}
+
+.oh-code {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--oh-text);
+  word-break: break-all;
+}
+
+.oh-date {
+  font-size: 0.875rem;
+  color: var(--oh-muted);
+}
+
+.oh-amount {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--oh-purple);
+  letter-spacing: -0.02em;
+}
+
+.oh-pill {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.oh-pill--ok {
+  background: var(--oh-green-bg);
+  color: var(--oh-green);
+  border: 1px solid #a7f3d0;
+}
+
+.oh-pill--danger {
+  background: var(--oh-red-bg);
+  color: var(--oh-red);
+  border: 1px solid #fecaca;
+}
+
+.oh-pill--warn {
+  background: var(--oh-amber-bg);
+  color: var(--oh-amber);
+  border: 1px solid #fde68a;
+}
+
+.oh-pill--muted {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.oh-pill--neutral {
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.oh-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+@media (max-width: 991px) {
+  .oh-card .oh-actions {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top: 1px solid #f1f0f9;
+    justify-content: space-between;
+  }
+}
+
+.oh-link-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--oh-purple);
+  text-decoration: none;
+  transition: color 0.2s, transform 0.15s;
+}
+
+.oh-link-detail:hover {
+  color: #5b21b6;
+  transform: translateX(2px);
+}
+
+.oh-link-detail i {
+  font-size: 0.75rem;
+}
+
+.oh-btn-cancel {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid #fecaca;
+  background: #fff;
+  color: var(--oh-red);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.oh-btn-cancel:hover {
+  background: var(--oh-red-bg);
+}
+
+.oh-empty {
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--oh-card);
+  border: 1px dashed var(--oh-border);
+  border-radius: var(--oh-radius);
+}
+
+.oh-empty i {
+  font-size: 2.5rem;
+  color: #c4b5fd;
+  margin-bottom: 12px;
+}
+
+.oh-empty h2 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--oh-text);
+}
+
+.oh-empty p {
+  margin: 0 0 16px;
+  color: var(--oh-muted);
+  font-size: 0.9rem;
+}
+
+.oh-empty a {
+  display: inline-block;
+  padding: 10px 20px;
+  background: var(--oh-purple);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 10px;
+}
+
+.oh-empty a:hover {
+  background: #5b21b6;
+  color: #fff;
+}
+
+.oh-section {
+  padding-top: 20px;
+  padding-bottom: 32px;
+}
+
+.oh-page .breadcrumb-area {
+  background: transparent;
+}

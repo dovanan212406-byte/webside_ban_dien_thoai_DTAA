@@ -1,0 +1,459 @@
+/* DTAA — Chi tiết đơn hàng (thiết bị / điện thoại) */
+:root {
+  --od-purple: #6d28d9;
+  --od-purple-light: #ede9fe;
+  --od-purple-dark: #5b21b6;
+  --od-green: #059669;
+  --od-green-soft: #ecfdf5;
+  --od-green-border: #a7f3d0;
+  --od-red: #dc2626;
+  --od-red-soft: #fef2f2;
+  --od-amber: #d97706;
+  --od-amber-soft: #fffbeb;
+  --od-bg: #f5f3ff;
+  --od-card: #ffffff;
+  --od-border: #e9e5f5;
+  --od-text: #1e1b4b;
+  --od-muted: #64748b;
+  --od-radius: 16px;
+  --od-font: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
+  --od-thumb: 128px;
+  --od-thumb-lg: 148px;
+}
+
+.od-page {
+  font-family: var(--od-font);
+  background: linear-gradient(180deg, var(--od-bg) 0%, #fafafa 45%);
+  min-height: 60vh;
+  padding-bottom: 48px;
+}
+
+.od-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 40% at 90% 5%, rgba(167, 139, 250, 0.18), transparent 55%),
+    radial-gradient(ellipse 40% 35% at 5% 20%, rgba(196, 181, 253, 0.2), transparent 50%);
+  z-index: 0;
+}
+
+.od-page .container {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+}
+
+.od-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--od-purple);
+  text-decoration: none;
+  transition: color 0.2s, transform 0.15s;
+}
+
+.od-back:hover {
+  color: var(--od-purple-dark);
+  transform: translateX(-3px);
+}
+
+.od-hero {
+  background: var(--od-card);
+  border: 1px solid var(--od-border);
+  border-radius: var(--od-radius);
+  padding: 22px 24px;
+  margin-bottom: 22px;
+  box-shadow: 0 4px 24px rgba(109, 40, 217, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.od-hero__code {
+  margin: 0 0 6px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--od-text);
+  letter-spacing: -0.02em;
+}
+
+.od-hero__code span {
+  color: var(--od-purple);
+}
+
+.od-hero__date {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--od-muted);
+}
+
+.od-hero__badges {
+  text-align: right;
+}
+
+.od-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.od-badge--paid {
+  background: var(--od-green-soft);
+  color: var(--od-green);
+  border: 1px solid var(--od-green-border);
+}
+
+.od-badge--cancel {
+  background: var(--od-red-soft);
+  color: var(--od-red);
+  border: 1px solid #fecaca;
+}
+
+.od-badge--pending {
+  background: var(--od-amber-soft);
+  color: var(--od-amber);
+  border: 1px solid #fde68a;
+}
+
+.od-badge--neutral {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.od-hero__sub {
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--od-muted);
+}
+
+.od-grid {
+  display: grid;
+  gap: 22px;
+}
+
+@media (min-width: 992px) {
+  .od-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    align-items: stretch;
+  }
+
+  .od-card--products {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .od-card--ship {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .od-status-card--grid {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 0;
+  }
+}
+
+.od-card {
+  background: var(--od-card);
+  border: 1px solid var(--od-border);
+  border-radius: var(--od-radius);
+  padding: 22px 22px 20px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+
+/* Hai thẻ sản phẩm / giao hàng cùng chiều cao hàng 1; phần tổng bám đáy thẻ trái */
+.od-card--products,
+.od-card--ship {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.od-card__lines {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.od-card__foot {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.od-pay-note {
+  margin: 12px 0 0;
+  text-align: right;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--od-muted);
+}
+
+.od-pay-note strong {
+  color: var(--od-purple);
+  font-weight: 800;
+}
+
+.od-dl--fill {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.od-card--soft {
+  background: linear-gradient(165deg, #f5f3ff 0%, #faf8ff 100%);
+  border-color: #ddd6fe;
+}
+
+.od-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--od-border);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--od-text);
+}
+
+.od-card__head i {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--od-purple-light);
+  color: var(--od-purple);
+  font-size: 1rem;
+}
+
+.od-card--soft .od-card__head i {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+/* Dòng sản phẩm — ảnh to */
+.od-line {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid #f1f0f9;
+}
+
+.od-card__lines .od-line:first-of-type {
+  padding-top: 0;
+}
+
+.od-card__lines .od-line:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.od-line__img-wrap {
+  flex-shrink: 0;
+  width: var(--od-thumb);
+  height: var(--od-thumb);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--od-border);
+  background: #f8fafc;
+  line-height: 0;
+}
+
+@media (min-width: 576px) {
+  .od-line__img-wrap {
+    width: var(--od-thumb-lg);
+    height: var(--od-thumb-lg);
+  }
+}
+
+.od-line__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.od-line__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.od-line__name {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--od-text);
+  line-height: 1.35;
+}
+
+.od-line__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  font-size: 0.875rem;
+  color: var(--od-muted);
+}
+
+.od-line__meta strong {
+  color: var(--od-text);
+  font-weight: 700;
+}
+
+.od-line__price {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--od-purple);
+  margin-top: 10px;
+}
+
+.od-total-bar {
+  margin-top: 12px;
+  padding-top: 18px;
+  border-top: 2px solid var(--od-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.od-total-bar__lbl {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--od-muted);
+}
+
+.od-total-bar__sum {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--od-purple);
+  letter-spacing: -0.02em;
+}
+
+/* Thông tin giao hàng */
+.od-dl {
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+
+.od-dl > div {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(221, 214, 254, 0.6);
+}
+
+@media (min-width: 576px) {
+  .od-dl > div {
+    grid-template-columns: 140px 1fr;
+    align-items: start;
+    gap: 16px;
+  }
+}
+
+.od-dl > div:last-child {
+  border-bottom: none;
+}
+
+.od-dl dt {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--od-muted);
+}
+
+.od-dl dd {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--od-text);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+/* Thẻ trạng thái thanh toán / hủy */
+.od-status-card {
+  margin-top: 0;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 2px solid var(--od-green-border);
+  background: var(--od-green-soft);
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.od-status-card--cancel {
+  border-color: #fecaca;
+  background: var(--od-red-soft);
+}
+
+.od-status-card--pending {
+  border-color: #fde68a;
+  background: var(--od-amber-soft);
+}
+
+.od-status-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--od-green);
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.15);
+}
+
+.od-status-card--cancel .od-status-card__icon {
+  color: var(--od-red);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.12);
+}
+
+.od-status-card--pending .od-status-card__icon {
+  color: var(--od-amber);
+}
+
+.od-status-card h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--od-text);
+}
+
+.od-status-card p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--od-muted);
+  line-height: 1.5;
+}
+
+.od-section-padding {
+  padding-top: 20px;
+  padding-bottom: 32px;
+}
+
+.od-page .breadcrumb-area {
+  background: transparent;
+}

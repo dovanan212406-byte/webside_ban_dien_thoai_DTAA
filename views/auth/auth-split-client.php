@@ -37,11 +37,11 @@ $regUrl   = BASE_URL . '?act=dang-ky';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#fce7f3">
+  <meta name="theme-color" content="#f0f1f3">
   <title><?= htmlspecialchars($authPageTitle) ?> — DTAA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/vendor/font-awesome.min.css">
   <link rel="stylesheet" href="assets/css/client-auth.css">
   <link rel="icon" href="assets/img/logo/LOGO.png" type="image/png">
@@ -49,25 +49,47 @@ $regUrl   = BASE_URL . '?act=dang-ky';
 <body class="smember-auth-page">
 
   <main class="smember-form-panel">
-    <!-- Back link -->
-    <a class="smember-back" href="<?= htmlspecialchars(BASE_URL) ?>">
-      <i class="fa fa-arrow-left" aria-hidden="true"></i> Về cửa hàng
-    </a>
-
-    <div class="smember-form-wrap">
-      <!-- Tabs -->
-      <div class="smember-tabs" role="tablist">
-        <a href="<?= htmlspecialchars($loginUrl) ?>"
-           class="smember-tab <?= $clientAuthTab === 'login' ? 'is-active' : '' ?>"
-           role="tab" aria-selected="<?= $clientAuthTab === 'login' ? 'true' : 'false' ?>">
-          <i class="fa fa-sign-in" aria-hidden="true"></i> Đăng nhập
-        </a>
-        <a href="<?= htmlspecialchars($regUrl) ?>"
-           class="smember-tab <?= $clientAuthTab === 'register' ? 'is-active' : '' ?>"
-           role="tab" aria-selected="<?= $clientAuthTab === 'register' ? 'true' : 'false' ?>">
-          <i class="fa fa-user-plus" aria-hidden="true"></i> Đăng ký
-        </a>
+    <!-- Visual aside panel -->
+    <aside class="smember-auth-visual" aria-hidden="true">
+      <div class="smember-auth-visual__inner">
+        <span class="smember-auth-visual__badge">DTAA Phone Store</span>
+        <h2 class="smember-auth-visual__title">
+          Mua sắm điện thoại<br>chính hãng giá tốt
+        </h2>
+        <p class="smember-auth-visual__text">
+          Hàng ngàn sản phẩm công nghệ cao cấp đang chờ bạn khám phá
+        </p>
+        <ul class="smember-auth-visual__dots">
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
       </div>
+    </aside>
+
+    <!-- Auth content area -->
+    <div class="smember-auth-content">
+      <!-- Back link -->
+      <a class="smember-back" href="<?= htmlspecialchars(BASE_URL) ?>">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i> Về cửa hàng
+      </a>
+
+      <div class="smember-form-wrap">
+        <!-- Tabs -->
+        <div class="smember-tabs smember-tabs--steps" role="tablist">
+          <a href="<?= htmlspecialchars($loginUrl) ?>"
+             class="smember-tab <?= $clientAuthTab === 'login' ? 'is-active' : '' ?>"
+             role="tab" aria-selected="<?= $clientAuthTab === 'login' ? 'true' : 'false' ?>">
+            <span class="smember-tab__step">1</span>
+            <span class="smember-tab__label"> Đăng nhập</span>
+          </a>
+          <a href="<?= htmlspecialchars($regUrl) ?>"
+             class="smember-tab <?= $clientAuthTab === 'register' ? 'is-active' : '' ?>"
+             role="tab" aria-selected="<?= $clientAuthTab === 'register' ? 'true' : 'false' ?>">
+            <span class="smember-tab__step">2</span>
+            <span class="smember-tab__label"> Đăng ký</span>
+          </a>
+        </div>
 
       <!-- ========== LOGIN ========== -->
       <?php if ($clientAuthTab === 'login'): ?>
@@ -241,8 +263,9 @@ $regUrl   = BASE_URL . '?act=dang-ky';
           </p>
         </div>
       <?php endif; ?>
-    </div>
-  </main>
+    </div><!-- .smember-form-wrap -->
+  </div><!-- .smember-auth-content -->
+</main>
 
   <!-- ========== MODALS ========== -->
   <div class="smember-modal" id="sm-modal-forgot" aria-hidden="true" role="dialog">

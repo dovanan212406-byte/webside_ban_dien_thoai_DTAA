@@ -100,6 +100,21 @@ class GioHang
             echo "Lỗi: " . $e->getMessage();
         }
     }
+
+    public function xoaMotSanPham($cart_id, $product_id)
+    {
+        try {
+            $sql = 'DELETE FROM cart_items
+            WHERE cart_id = :cart_id AND product_id = :product_id';
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':cart_id' => $cart_id, ':product_id' => $product_id]);
+
+            return true;
+        } catch (Exception $e) {
+            echo "Lỗi: " . $e->getMessage();
+        }
+    }
     public function clearGioHang($userId)
     {
         try {

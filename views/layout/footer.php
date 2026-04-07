@@ -137,6 +137,31 @@
 <script src="assets/js/plugins/google-map.js"></script>
 <!-- Main JS -->
 <script src="assets/js/main.js"></script>
+<script>
+function muaNgay(sanPhamId) {
+    var soLuong = document.getElementById('so-luong-display').value;
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '<?=BASE_URL?>?act=them-gio-hang';
+    var inputId = document.createElement('input');
+    inputId.type = 'hidden';
+    inputId.name = 'san_pham_id';
+    inputId.value = sanPhamId;
+    var inputQty = document.createElement('input');
+    inputQty.type = 'hidden';
+    inputQty.name = 'so_luong';
+    inputQty.value = soLuong;
+    var inputMuaNgay = document.createElement('input');
+    inputMuaNgay.type = 'hidden';
+    inputMuaNgay.name = 'mua_ngay';
+    inputMuaNgay.value = '1';
+    form.appendChild(inputId);
+    form.appendChild(inputQty);
+    form.appendChild(inputMuaNgay);
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
 </body>
 
 

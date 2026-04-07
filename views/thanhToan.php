@@ -1,7 +1,36 @@
-<?php require_once 'layout/header.php'; ?>
-<?php require_once 'layout/menu.php'; ?>
+<?php
+require_once 'layout/header.php';
+require_once 'layout/menu.php';
+
+$tongGioHang = 0;
+$tongSoLuong = 0;
+foreach ($chiTietGioHang as $row) {
+    $gia = !empty($row['discount_price']) ? (float) $row['discount_price'] : (float) $row['price'];
+    $qty = (int) ($row['quantity'] ?? 0);
+    $tongGioHang += (int) round($gia * $qty);
+    $tongSoLuong += $qty;
+}
+$phiVanChuyen = 250000;
+$tongDon = $tongGioHang + $phiVanChuyen;
+
+$errThanhToan = '';
+if (!empty($_SESSION['error_thanh_toan'])) {
+    $errThanhToan = (string) $_SESSION['error_thanh_toan'];
+    unset($_SESSION['error_thanh_toan']);
+}
+
+$uTen = htmlspecialchars(trim((string) ($user['ho_ten'] ?? '')), ENT_QUOTES, 'UTF-8');
+$uEmail = htmlspecialchars(trim((string) ($user['email'] ?? '')), ENT_QUOTES, 'UTF-8');
+$uSdt = htmlspecialchars(trim((string) ($user['so_dien_thoai'] ?? '')), ENT_QUOTES, 'UTF-8');
+$uDcRaw = trim((string) ($user['dia_chi'] ?? ''));
+$uDc = htmlspecialchars($uDcRaw, ENT_QUOTES, 'UTF-8');
+?>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/checkout-steps.css">
+
 <main>
-    <!-- breadcrumb area start -->
     <div class="breadcrumb-area">
         <div class="container">
             <div class="row">
@@ -9,9 +38,8 @@
                     <div class="breadcrumb-wrap">
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="<?= BASE_URL ?>"><i class="fa fa-home"></i></a>
-                                </li>
-                                <li class="breadcrumb-item"><a href="shop.html">shop</a></li>
+                                <li class="breadcrumb-item"><a href="<?= BASE_URL ?>"><i class="fa fa-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="<?= BASE_URL ?>">Cửa hàng</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Thanh toán</li>
                             </ul>
                         </nav>
@@ -20,160 +48,257 @@
             </div>
         </div>
     </div>
-    <!-- breadcrumb area end -->
 
-    <!-- checkout main wrapper start -->
-    <div class="checkout-page-wrapper section-padding">
+    <div class="checkout-page-wrapper section-padding checkout-dtaa">
         <div class="container">
-            <form action="<?= BASE_URL . '?act=xu-ly-thanh-toan' ?>" method="POST">
-                <div class="row">
-                    <!-- Checkout Billing Details -->
-                    <div class="col-lg-6">
-                        <div class="checkout-billing-details-wrap">
-                            <h5 class="checkout-title">Thông tin người nhận</h5>
-                            <div class="billing-form-wrap">
+            <div class="checkout-dtaa__inner">
+                <?php if ($errThanhToan !== ''): ?>
+                    <div class="checkout-dtaa-alert" role="alert"><?= htmlspecialchars($errThanhToan, ENT_QUOTES, 'UTF-8') ?></div>
+                <?php endif; ?>
 
+                <form id="checkout-dtaa-form" action="<?= htmlspecialchars(BASE_URL . '?act=xu-ly-thanh-toan', ENT_QUOTES, 'UTF-8') ?>" method="POST" novalidate>
+                    <input type="hidden" name="tong_tien" value="<?= (int) $tongDon ?>">
 
+                    <div class="checkout-dtaa-appbar">
+                        <a class="checkout-dtaa-appbar__back" href="<?= htmlspecialchars(BASE_URL . '?act=gio-hang', ENT_QUOTES, 'UTF-8') ?>" aria-label="Quay lại giỏ hàng"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+                        <h2 class="checkout-dtaa-appbar__title" id="ck-app-title">Thông tin</h2>
+                    </div>
 
-                                <div class="single-input-item">
-                                    <label for="ten_nguoi_nhan" class="required">Tên người nhận</label>
-                                    <input type="text" id="ten_nguoi_nhan" name="ten_nguoi_nhan"
-                                        value="<?= $user['ho_ten'] ?>" placeholder="Email Address" required />
+                    <div class="checkout-dtaa-tabs" role="tablist">
+                        <button type="button" class="checkout-dtaa-tab is-active" id="ck-tab-1" role="tab" aria-selected="true" aria-controls="ck-panel-1" data-go="1">
+                            1. THÔNG TIN
+                        </button>
+                        <button type="button" class="checkout-dtaa-tab" id="ck-tab-2" role="tab" aria-selected="false" aria-controls="ck-panel-2" data-go="2">
+                            2. THANH TOÁN
+                        </button>
+                    </div>
+
+                    <!-- Bước 1: Thông tin -->
+                    <div class="checkout-dtaa-panel" id="ck-panel-1" role="tabpanel" aria-labelledby="ck-tab-1" data-step="1">
+                        <div class="checkout-dtaa-card">
+                            <h2 class="checkout-dtaa-section-title">Đơn hàng</h2>
+                            <?php foreach ($chiTietGioHang as $sp):
+                                $giaBan = !empty($sp['discount_price']) ? (float) $sp['discount_price'] : (float) $sp['price'];
+                                $giaGoc = !empty($sp['discount_price']) ? (float) $sp['price'] : null;
+                                $qty = (int) ($sp['quantity'] ?? 0);
+                                $lineTotal = (int) round($giaBan * $qty);
+                                ?>
+                                <div class="checkout-dtaa-line">
+                                    <img class="checkout-dtaa-line__img" src="<?= htmlspecialchars(BASE_URL . $sp['image'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars((string) ($sp['name'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+                                    <div class="checkout-dtaa-line__body">
+                                        <p class="checkout-dtaa-line__name"><?= htmlspecialchars((string) ($sp['name'] ?? ''), ENT_QUOTES, 'UTF-8') ?></p>
+                                        <div class="checkout-dtaa-line__meta">
+                                            <span class="checkout-dtaa-price"><?= formatPrice($lineTotal) ?></span>
+                                            <?php if ($giaGoc !== null): ?>
+                                                <span class="checkout-dtaa-price--old"><?= formatPrice((int) round($giaGoc * $qty)) ?></span>
+                                            <?php endif; ?>
+                                            <span class="checkout-dtaa-qty">Số lượng: <strong><?= $qty ?></strong></span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="single-input-item">
-                                    <label for="email_nguoi_nhan" class="required">Địa chỉ email</label>
-                                    <input type="email" id="email_nguoi_nhan" name="email_nguoi_nhan"
-                                        value="<?= $user['email'] ?> " placeholder="Địa chỉ email" required />
-                                </div>
-                                <div class="single-input-item">
-                                    <label for="sdt_nguoi_nhan" class="required">Số điện thoại</label>
-                                    <input type="text" id="sdt_nguoi_nhan" name="sdt_nguoi_nhan"
-                                        value="<?= $user['so_dien_thoai'] ?> " placeholder="Số điện thoại" required />
-                                </div>
-                                <div class="single-input-item">
-                                    <label for="dia_chi_nguoi_nhan" class="required">Địa chỉ</label>
-                                    <input type="text" id="dia_chi_nguoi_nhan" name="dia_chi_nguoi_nhan"
-                                        value="<?= $user['dia_chi'] ?> " placeholder="Địa chỉ" required />
-                                </div>
+                            <?php endforeach; ?>
+                        </div>
 
-
-                                <div class="single-input-item">
-                                    <label for="ghi_chu">Ghi chú</label>
-                                    <textarea name="ghi_chu" id="ghi_chu" cols="30" rows="3"
-                                        placeholder="Vui lòng nhập ghi chú."></textarea>
+                        <div class="checkout-dtaa-card">
+                            <h2 class="checkout-dtaa-section-title">Thông tin khách hàng</h2>
+                            <div class="checkout-dtaa-cust-head">
+                                <div class="checkout-dtaa-cust-head__left">
+                                    <input class="checkout-dtaa-cust-name" type="text" id="ten_nguoi_nhan" name="ten_nguoi_nhan" required
+                                           value="<?= $uTen ?>" placeholder="Họ và tên" autocomplete="name" aria-label="Họ và tên">
+                                    <span class="checkout-dtaa-badge" title="Khách hàng">KH</span>
                                 </div>
+                                <input class="checkout-dtaa-cust-tel" type="text" id="sdt_nguoi_nhan" name="sdt_nguoi_nhan" required
+                                       value="<?= $uSdt ?>" placeholder="SĐT" inputmode="tel" autocomplete="tel" aria-label="Số điện thoại">
+                            </div>
+                            <div class="checkout-dtaa-field checkout-dtaa-field--line">
+                                <label for="email_nguoi_nhan">Email <span class="req">*</span></label>
+                                <input type="email" id="email_nguoi_nhan" name="email_nguoi_nhan" required
+                                       value="<?= $uEmail ?>" placeholder="Nhập email" autocomplete="email">
+                                <p class="checkout-dtaa-hint">(*) Hóa đơn VAT (nếu có) sẽ được gửi qua email này.</p>
+                            </div>
+                            <label class="checkout-dtaa-check-line">
+                                <input type="checkbox" id="ck-email-promo" name="nhan_uu_dai_email" value="1">
+                                <span>Nhận email thông báo và ưu đãi từ cửa hàng DTAA.</span>
+                            </label>
+                        </div>
 
+                        <div class="checkout-dtaa-card">
+                            <h2 class="checkout-dtaa-section-title">Thông tin nhận hàng</h2>
+                            <div class="checkout-dtaa-field">
+                                <label for="dia_chi_nguoi_nhan">Địa chỉ nhận hàng <span class="req">*</span></label>
+                                <input type="text" id="dia_chi_nguoi_nhan" name="dia_chi_nguoi_nhan" required
+                                       value="<?= $uDc ?>" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố..." autocomplete="street-address">
+                            </div>
+                            <label class="checkout-dtaa-check-line">
+                                <input type="checkbox" id="ck-save-addr" name="luu_dia_chi" value="1">
+                                <span>Lưu địa chỉ cho lần mua kế tiếp (gợi ý — cần cập nhật hồ sơ sau).</span>
+                            </label>
+                            <div class="checkout-dtaa-field checkout-dtaa-field--note-top">
+                                <label for="ghi_chu">Ghi chú</label>
+                                <textarea name="ghi_chu" id="ghi_chu" rows="3" placeholder="Ghi chú giao hàng (tuỳ chọn)"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="checkout-dtaa-card">
+                            <div class="checkout-dtaa-vat-row">
+                                <p class="checkout-dtaa-vat-row__q">Quý khách có muốn xuất hóa đơn công ty không?</p>
+                                <div class="checkout-dtaa-vat-opts" role="radiogroup" aria-label="Hóa đơn công ty">
+                                    <label><input type="radio" name="xuat_hd_ct" id="ck-vat-yes" value="1"><span>Có</span></label>
+                                    <label><input type="radio" name="xuat_hd_ct" id="ck-vat-no" value="0" checked><span>Không</span></label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Order Summary Details -->
-                    <div class="col-lg-6">
-                        <div class="order-summary-details">
-                            <h5 class="checkout-title">Thông tin sản phẩm</h5>
-                            <div class="order-summary-content">
-                                <!-- Order Summary Table -->
-                                <div class="order-summary-table table-responsive text-center">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Sản phẩm</th>
-                                                <th>Tổng</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                    <!-- Bước 2: Thanh toán -->
+                    <div class="checkout-dtaa-panel" id="ck-panel-2" role="tabpanel" aria-labelledby="ck-tab-2" data-step="2" hidden>
+                        <div class="checkout-dtaa-card">
+                            <h2 class="checkout-dtaa-section-title">Tóm tắt thanh toán</h2>
+                            <div class="checkout-dtaa-promo">
+                                <input type="text" readonly tabindex="-1" placeholder="Nhập mã giảm giá (sắp có)" aria-disabled="true">
+                                <button type="button" tabindex="-1" disabled>Áp dụng</button>
+                            </div>
+                            <ul class="checkout-dtaa-rows">
+                                <li><span class="k">Số lượng sản phẩm</span><span class="v"><?= str_pad((string) $tongSoLuong, 2, '0', STR_PAD_LEFT) ?></span></li>
+                                <li><span class="k">Tổng tiền hàng</span><span class="v"><?= formatPrice($tongGioHang) ?></span></li>
+                                <li><span class="k">Phí vận chuyển</span><span class="v"><?= formatPrice($phiVanChuyen) ?></span></li>
+                            </ul>
+                            <div class="checkout-dtaa-total-block">
+                                <span class="lbl">Tổng thanh toán</span>
+                                <span class="sum"><?= formatPrice($tongDon) ?></span>
+                            </div>
+                            <p class="checkout-dtaa-vat-note">Số tiền cuối cùng có thể được điều chỉnh theo chính sách cửa hàng.</p>
+                        </div>
 
-                                            <?php
-                                            $tongGioHang = 0;
-                                            foreach ($chiTietGioHang as $key => $sanPham):
-                                                ?>
-                                                <tr>
-                                                    <td><a href=""><?= $sanPham['name'] ?>
-                                                            <strong>x<?= $sanPham['quantity'] ?></strong></a>
-                                                    </td>
-                                                    <td> <?php
-                                                    if ($sanPham['discount_price']) {
-                                                        $tong_tien = $sanPham['discount_price'] * $sanPham['quantity'];
-                                                    } else {
-                                                        $tong_tien = $sanPham['price'] * $sanPham['quantity'];
-                                                    }
-                                                    $tongGioHang += $tong_tien;
-                                                    echo formatPrice($tong_tien);
-                                                    ?></td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td>Tổng tiền sản phẩm</td>
-                                                <td><strong><?= formatPrice($tongGioHang) ?></strong></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Phí vận chuyển</td>
-                                                <td class="d-flex justify-content-center">
-                                                    <strong>250000</strong>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Tổng đơn hàng</td>
-                                                <input type="hidden"name="tong_tien" value="<?=$tongGioHang + 250000?>" >
-                                                <td><strong><?php
-                                                $tong_tien = $tongGioHang + 250000;
-                                                echo formatPrice($tong_tien);
-                                                ?></strong></td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                        <div class="checkout-dtaa-card">
+                            <h2 class="checkout-dtaa-section-title">Phương thức thanh toán</h2>
+                            <div class="checkout-dtaa-pay">
+                                <input type="radio" id="cashon" name="phuong_thuc_thanh_toan_id" value="1" checked>
+                                <div>
+                                    <label for="cashon">Thanh toán khi nhận hàng (COD)</label>
+                                    <p>Thanh toán bằng tiền mặt khi nhận được hàng. Đơn hàng sẽ được xác nhận trước khi giao.</p>
                                 </div>
-                                <!-- Order Payment Method -->
-                                <div class="order-payment-method">
-                                    <div class="single-payment-method show">
-                                        <div class="payment-method-name">
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="cashon" value="1" name="phuong_thuc_thanh_toan_id"
-                                                    class="custom-control-input" checked />
-                                                <label class="custom-control-label" for="cashon">Thanh toán khi nhận
-                                                    hàng</label>
-                                            </div>
-                                        </div>
-                                        <div class="payment-method-details" data-method="cash">
-                                            <p>Khách hàng có thể thanh toán sau khi nhận hàng thành công(Cần xác nhận
-                                                đơn hàng)</p>
-                                        </div>
-                                    </div>
-                                    <div class="single-payment-method">
-                                        <div class="payment-method-name">
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="directbank"  value="2" name="phuong_thuc_thanh_toan_id" value="bank"
-                                                    class="custom-control-input" />
-                                                <label class="custom-control-label" for="directbank">Thanh toán bằng
-                                                    ngân hàng</label>
-                                            </div>
-                                        </div>
-                                        <div class="payment-method-details" data-method="cash">
-                                            <p>Khách hàng cần thanh toán online</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="summary-footer-area">
-                                        <div class="custom-control custom-checkbox mb-20">
-                                            <input type="checkbox" class="custom-control-input" id="terms" required />
-                                            <label class="custom-control-label" for="terms">Xác nhận đơn hàng</label>
-                                        </div>
-                                        <button type="submit" class="btn btn-sqr">Đặt hàng </button>
-                                    </div>
+                            </div>
+                            <div class="checkout-dtaa-pay">
+                                <input type="radio" id="directbank" name="phuong_thuc_thanh_toan_id" value="2">
+                                <div>
+                                    <label for="directbank">Chuyển khoản ngân hàng</label>
+                                    <p>Chuyển khoản theo hướng dẫn sau khi đặt hàng (nếu cửa hàng hỗ trợ).</p>
                                 </div>
-
                             </div>
                         </div>
+
+                        <div class="checkout-dtaa-card">
+                            <h2 class="checkout-dtaa-section-title">Xác nhận</h2>
+                            <label class="checkout-dtaa-terms">
+                                <input type="checkbox" id="terms" required>
+                                <span>Tôi xác nhận thông tin giao hàng là chính xác và đồng ý đặt hàng theo chính sách của cửa hàng.</span>
+                            </label>
+                        </div>
                     </div>
-                </div>
+
+                    <!-- Chân trang bước 1 -->
+                    <div class="checkout-dtaa-sticky" id="ck-footer-1">
+                        <div class="checkout-dtaa-sticky__row">
+                            <span>Tổng tiền tạm tính:</span>
+                            <strong><?= formatPrice($tongDon) ?></strong>
+                        </div>
+                        <button type="button" class="checkout-dtaa-sticky__btn" id="ck-btn-next">Tiếp tục</button>
+                    </div>
+
+                    <!-- Chân trang bước 2 -->
+                    <div class="checkout-dtaa-sticky" id="ck-footer-2" hidden>
+                        <div class="checkout-dtaa-sticky__row">
+                            <span>Tổng thanh toán:</span>
+                            <strong><?= formatPrice($tongDon) ?></strong>
+                        </div>
+                        <button type="button" class="checkout-dtaa-sticky__btn checkout-dtaa-sticky__btn--ghost" id="ck-btn-back">Quay lại</button>
+                        <button type="submit" class="checkout-dtaa-sticky__btn" id="ck-btn-submit">Đặt hàng</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        </form>
     </div>
-    <!-- checkout main wrapper end -->
 </main>
 
-<?php require_once 'views/miniCart.php'; ?>
+<script>
+(function () {
+  var form = document.getElementById('checkout-dtaa-form');
+  if (!form) return;
 
+  var tab1 = document.getElementById('ck-tab-1');
+  var tab2 = document.getElementById('ck-tab-2');
+  var p1 = document.getElementById('ck-panel-1');
+  var p2 = document.getElementById('ck-panel-2');
+  var f1 = document.getElementById('ck-footer-1');
+  var f2 = document.getElementById('ck-footer-2');
+  var btnNext = document.getElementById('ck-btn-next');
+  var btnBack = document.getElementById('ck-btn-back');
+  var appTitle = document.getElementById('ck-app-title');
+
+  function setStep(n) {
+    var isOne = n === 1;
+    p1.hidden = !isOne;
+    p2.hidden = isOne;
+    f1.hidden = !isOne;
+    f2.hidden = isOne;
+    tab1.classList.toggle('is-active', isOne);
+    tab2.classList.toggle('is-active', !isOne);
+    tab1.setAttribute('aria-selected', isOne ? 'true' : 'false');
+    tab2.setAttribute('aria-selected', isOne ? 'false' : 'true');
+    if (appTitle) appTitle.textContent = isOne ? 'Thông tin' : 'Thanh toán';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function validatePanel1() {
+    var ids = ['ten_nguoi_nhan', 'email_nguoi_nhan', 'sdt_nguoi_nhan', 'dia_chi_nguoi_nhan'];
+    for (var i = 0; i < ids.length; i++) {
+      var el = document.getElementById(ids[i]);
+      if (el && !el.checkValidity()) {
+        el.reportValidity();
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function enrichGhiChuOnce() {
+    var ta = document.getElementById('ghi_chu');
+    if (!ta || ta.dataset.ckEnriched === '1') return;
+    var inv = form.querySelector('input[name="xuat_hd_ct"]:checked');
+    if (inv) {
+      var extra = '\n[Hóa đơn công ty: ' + (inv.value === '1' ? 'Có' : 'Không') + ']';
+      ta.value = (ta.value + extra).trim();
+    }
+    ta.dataset.ckEnriched = '1';
+  }
+
+  tab1.addEventListener('click', function () { setStep(1); });
+  tab2.addEventListener('click', function () {
+    if (validatePanel1()) setStep(2);
+  });
+  if (btnNext) btnNext.addEventListener('click', function () {
+    if (validatePanel1()) setStep(2);
+  });
+  if (btnBack) btnBack.addEventListener('click', function () { setStep(1); });
+
+  form.addEventListener('submit', function (e) {
+    if (!validatePanel1()) {
+      e.preventDefault();
+      setStep(1);
+      return;
+    }
+    var terms = document.getElementById('terms');
+    if (!terms || !terms.checked) {
+      e.preventDefault();
+      setStep(2);
+      if (terms) terms.focus();
+      return;
+    }
+    enrichGhiChuOnce();
+  });
+})();
+</script>
+
+<?php require_once 'views/miniCart.php'; ?>
 <?php require_once 'layout/footer.php'; ?>

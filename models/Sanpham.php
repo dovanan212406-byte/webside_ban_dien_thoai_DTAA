@@ -48,20 +48,21 @@ public function getListAnhSanPham($id){
         echo "Lỗi: " . $e->getMessage();
     }
 }
- public function getBinhLuanFormSanPham($id){
+    public function getBinhLuanFormSanPham($id)
+    {
         try {
-            $sql = "SELECT reviews.*, products.name, users.avatar
-        FROM reviews
-        INNER JOIN products ON reviews.product_id = products.id
-        INNER JOIN users ON reviews.user_id = users.id
-        WHERE reviews.user_id = :id";
+            $sql = 'SELECT reviews.*, products.name, users.avatar
+                    FROM reviews
+                    INNER JOIN products ON reviews.product_id = products.id
+                    INNER JOIN users ON reviews.user_id = users.id
+                    WHERE reviews.product_id = :id';
 
             $stmt = $this->conn->prepare($sql);
-            $stmt->execute([':id'=>$id]);
+            $stmt->execute([':id' => $id]);
 
             return $stmt->fetchAll();
-        } catch(Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+        } catch (Exception $e) {
+            echo 'Lỗi: ' . $e->getMessage();
         }
     }
 

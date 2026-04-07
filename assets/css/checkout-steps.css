@@ -1,0 +1,668 @@
+/* DTAA — Thanh toán 2 bước: Thông tin / Thanh toán (phong cách thương mại điện tử) */
+:root {
+  --ck-bg: #f4f4f4;
+  --ck-card: #ffffff;
+  --ck-border: #e8e8e8;
+  --ck-red: #d70018;
+  --ck-red-hover: #b80014;
+  --ck-text: #1a1a1a;
+  --ck-muted: #6b7280;
+  --ck-label: #9ca3af;
+  --ck-section: #374151;
+  --ck-radius: 10px;
+  --ck-font: system-ui, -apple-system, "Segoe UI", Roboto, "Be Vietnam Pro", sans-serif;
+}
+
+.checkout-dtaa {
+  --ck-font: "Be Vietnam Pro", system-ui, sans-serif;
+  font-family: var(--ck-font);
+  background: var(--ck-bg);
+  padding-bottom: 100px;
+}
+
+.checkout-dtaa .checkout-dtaa__inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Header kiểu app (Thông tin / Thanh toán) */
+.checkout-dtaa-appbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: var(--ck-card);
+  border: 1px solid var(--ck-border);
+  border-radius: var(--ck-radius);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  min-height: 48px;
+}
+
+.checkout-dtaa-appbar__back {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ck-text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.checkout-dtaa-appbar__back:hover {
+  background: #f3f4f6;
+  color: var(--ck-red);
+}
+
+.checkout-dtaa-appbar__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ck-text);
+}
+
+/* Dòng tên + badge + SĐT */
+.checkout-dtaa-cust-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.checkout-dtaa-cust-head__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.checkout-dtaa-cust-name {
+  flex: 1;
+  min-width: 120px;
+  border: none;
+  border-bottom: 1px solid var(--ck-border);
+  border-radius: 0;
+  padding: 8px 0;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  background: transparent;
+  color: var(--ck-text);
+}
+
+.checkout-dtaa-cust-name:focus {
+  outline: none;
+  border-bottom-color: var(--ck-red);
+  box-shadow: none;
+}
+
+.checkout-dtaa-badge {
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #f9a8d4;
+  color: #be185d;
+  background: #fdf2f8;
+}
+
+.checkout-dtaa-cust-tel {
+  flex-shrink: 0;
+  width: 140px;
+  max-width: 42%;
+  border: none;
+  border-bottom: 1px solid var(--ck-border);
+  border-radius: 0;
+  padding: 8px 0;
+  text-align: right;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-family: inherit;
+  background: transparent;
+  color: var(--ck-text);
+}
+
+.checkout-dtaa-cust-tel:focus {
+  outline: none;
+  border-bottom-color: var(--ck-red);
+}
+
+/* Input gạch dưới (email) */
+.checkout-dtaa-field--line input,
+.checkout-dtaa-field--line textarea {
+  border: none;
+  border-bottom: 1px solid #d1d5db;
+  border-radius: 0;
+  padding: 10px 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.checkout-dtaa-field--line input:focus,
+.checkout-dtaa-field--line textarea:focus {
+  border-bottom-color: var(--ck-red);
+  box-shadow: none;
+}
+
+.checkout-dtaa-field--line textarea {
+  min-height: 56px;
+}
+
+.checkout-dtaa-field--note-top {
+  margin-top: 18px;
+  margin-bottom: 0;
+}
+
+.checkout-dtaa-check-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+  font-size: 0.8125rem;
+  color: var(--ck-muted);
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.checkout-dtaa-check-line input {
+  margin-top: 3px;
+  accent-color: var(--ck-red);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Hóa đơn công ty */
+.checkout-dtaa-vat-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  justify-content: space-between;
+}
+
+.checkout-dtaa-vat-row__q {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ck-text);
+  flex: 1;
+  min-width: 200px;
+}
+
+.checkout-dtaa-vat-opts {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.checkout-dtaa-vat-opts label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ck-muted);
+  cursor: pointer;
+}
+
+.checkout-dtaa-vat-opts input {
+  accent-color: var(--ck-red);
+  width: 18px;
+  height: 18px;
+}
+
+.checkout-dtaa-vat-opts label:has(input:checked) {
+  color: var(--ck-red);
+}
+
+/* Tabs — giống thanh toán 2 bước */
+.checkout-dtaa-tabs {
+  display: flex;
+  background: var(--ck-card);
+  border: 1px solid var(--ck-border);
+  border-radius: var(--ck-radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.checkout-dtaa-tab {
+  flex: 1;
+  padding: 14px 12px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ck-muted);
+  cursor: pointer;
+  border-bottom: 3px solid #e5e5e5;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.checkout-dtaa-tab:hover:not(.is-active) {
+  color: var(--ck-text);
+  background: #fafafa;
+}
+
+.checkout-dtaa-tab.is-active {
+  color: var(--ck-red);
+  border-bottom-color: var(--ck-red);
+  background: var(--ck-card);
+}
+
+/* Panels */
+.checkout-dtaa-panel[hidden] {
+  display: none !important;
+}
+
+.checkout-dtaa-card {
+  background: var(--ck-card);
+  border: 1px solid var(--ck-border);
+  border-radius: var(--ck-radius);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+
+.checkout-dtaa-section-title {
+  margin: 0 0 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ck-section);
+  text-transform: uppercase;
+}
+
+/* Dòng sản phẩm (bước 1) */
+.checkout-dtaa-line {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--ck-border);
+}
+
+.checkout-dtaa-line:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.checkout-dtaa-line__img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--ck-border);
+  flex-shrink: 0;
+  background: #f9fafb;
+}
+
+.checkout-dtaa-line__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.checkout-dtaa-line__name {
+  margin: 0 0 6px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ck-text);
+  line-height: 1.35;
+}
+
+.checkout-dtaa-line__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  font-size: 0.875rem;
+}
+
+.checkout-dtaa-price {
+  font-weight: 700;
+  color: var(--ck-red);
+}
+
+.checkout-dtaa-price--old {
+  font-weight: 500;
+  color: var(--ck-muted);
+  text-decoration: line-through;
+  font-size: 0.8125rem;
+}
+
+.checkout-dtaa-qty {
+  margin-left: auto;
+  font-size: 0.8125rem;
+  color: var(--ck-muted);
+}
+
+.checkout-dtaa-qty strong {
+  color: var(--ck-red);
+  font-weight: 700;
+}
+
+/* Form fields */
+.checkout-dtaa-field {
+  margin-bottom: 16px;
+}
+
+.checkout-dtaa-field:last-child {
+  margin-bottom: 0;
+}
+
+.checkout-dtaa-field label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ck-label);
+  margin-bottom: 6px;
+}
+
+.checkout-dtaa-field label .req {
+  color: var(--ck-red);
+}
+
+.checkout-dtaa-field input,
+.checkout-dtaa-field textarea {
+  width: 100%;
+  border: 1px solid var(--ck-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  background: #fafafa;
+  color: var(--ck-text);
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.checkout-dtaa-field input:focus,
+.checkout-dtaa-field textarea:focus {
+  outline: none;
+  border-color: rgba(215, 0, 24, 0.35);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(215, 0, 24, 0.08);
+}
+
+.checkout-dtaa-field textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.checkout-dtaa-hint {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+  color: var(--ck-muted);
+  font-style: italic;
+}
+
+/* Mã giảm giá (chỉ giao diện) */
+.checkout-dtaa-promo {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.checkout-dtaa-promo input {
+  flex: 1;
+  border: 1px solid var(--ck-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  background: #fafafa;
+}
+
+.checkout-dtaa-promo button {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  border: 1px solid var(--ck-border);
+  border-radius: 8px;
+  background: #f3f4f6;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ck-muted);
+  cursor: not-allowed;
+}
+
+/* Bảng tóm tắt bước 2 */
+.checkout-dtaa-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+}
+
+.checkout-dtaa-rows li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  gap: 12px;
+}
+
+.checkout-dtaa-rows li:last-child {
+  border-bottom: none;
+}
+
+.checkout-dtaa-rows .k {
+  color: var(--ck-muted);
+}
+
+.checkout-dtaa-rows .v {
+  font-weight: 600;
+  color: var(--ck-text);
+  text-align: right;
+}
+
+.checkout-dtaa-rows .v--red {
+  color: var(--ck-red);
+}
+
+.checkout-dtaa-total-block {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 2px solid var(--ck-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkout-dtaa-total-block .lbl {
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.checkout-dtaa-total-block .sum {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--ck-red);
+}
+
+.checkout-dtaa-vat-note {
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+  color: var(--ck-muted);
+}
+
+/* Phương thức thanh toán */
+.checkout-dtaa-pay {
+  border: 1px solid var(--ck-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.checkout-dtaa-pay:hover {
+  background: #fafafa;
+}
+
+.checkout-dtaa-pay:focus-within {
+  border-color: rgba(215, 0, 24, 0.35);
+}
+
+.checkout-dtaa-pay input:checked ~ div label {
+  color: var(--ck-red);
+}
+
+.checkout-dtaa-pay input {
+  margin-top: 4px;
+  accent-color: var(--ck-red);
+  width: 18px;
+  height: 18px;
+}
+
+.checkout-dtaa-pay label {
+  margin: 0;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--ck-text);
+}
+
+.checkout-dtaa-pay p {
+  margin: 4px 0 0;
+  font-size: 0.8125rem;
+  color: var(--ck-muted);
+  line-height: 1.45;
+}
+
+/* Checkbox điều khoản */
+.checkout-dtaa-terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 18px 0 8px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ck-muted);
+}
+
+.checkout-dtaa-terms input {
+  margin-top: 3px;
+  accent-color: var(--ck-red);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Sticky footer */
+.checkout-dtaa-sticky {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: var(--ck-card);
+  border-top: 1px solid var(--ck-border);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.checkout-dtaa-sticky__row {
+  max-width: 720px;
+  margin: 0 auto 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.checkout-dtaa-sticky__row strong {
+  font-size: 1.05rem;
+  color: var(--ck-red);
+}
+
+.checkout-dtaa-sticky__btn {
+  max-width: 720px;
+  margin: 0 auto;
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  border-radius: var(--ck-radius);
+  background: var(--ck-red);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.checkout-dtaa-sticky__btn:hover {
+  background: var(--ck-red-hover);
+}
+
+.checkout-dtaa-sticky__btn:active {
+  transform: scale(0.99);
+}
+
+.checkout-dtaa-sticky__btn--ghost {
+  background: #fff;
+  color: var(--ck-red);
+  border: 2px solid var(--ck-red);
+  margin-bottom: 8px;
+}
+
+.checkout-dtaa-sticky__btn--ghost:hover {
+  background: #fff5f5;
+}
+
+.checkout-dtaa-alert {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 992px) {
+  .checkout-dtaa {
+    padding-bottom: 40px;
+  }
+
+  .checkout-dtaa-sticky {
+    position: static;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin-top: 8px;
+    background: transparent;
+  }
+
+  .checkout-dtaa-sticky__row {
+    margin-bottom: 12px;
+  }
+
+  .checkout-dtaa-sticky__btn {
+    max-width: none;
+  }
+}

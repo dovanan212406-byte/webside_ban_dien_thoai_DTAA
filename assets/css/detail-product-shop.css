@@ -1,0 +1,239 @@
+/* Chi tiết sản phẩm — phong cách shop điện thoại (Mua ngay / Trả góp / Thêm giỏ) */
+.pdp-shop-wrap {
+  margin-bottom: 2rem;
+}
+.pdp-shop-feature {
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  border-radius: 16px;
+  padding: 1.5rem;
+  color: #fff;
+  height: 100%;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 12px 40px rgba(247, 147, 30, 0.35);
+}
+.pdp-shop-feature__img {
+  text-align: center;
+  flex-shrink: 0;
+}
+.pdp-shop-feature__img img {
+  max-height: 220px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.2));
+}
+.pdp-shop-feature__list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  opacity: 0.95;
+}
+.pdp-shop-feature__list li {
+  margin-bottom: 0.35rem;
+}
+.pdp-shop-aside {
+  padding-left: 0.5rem;
+}
+@media (max-width: 991px) {
+  .pdp-shop-aside {
+    padding-left: 0;
+    margin-top: 1.5rem;
+  }
+}
+.pdp-shop-breadcrumb {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+.pdp-shop-breadcrumb a {
+  color: #64748b;
+  text-decoration: none;
+}
+.pdp-shop-breadcrumb a:hover {
+  color: #ff6b35;
+}
+.pdp-shop-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.35;
+  margin-bottom: 1rem;
+}
+.pdp-shop-price-main {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #e11d48;
+  line-height: 1.2;
+}
+.pdp-shop-price-old {
+  font-size: 1rem;
+  color: #94a3b8;
+  text-decoration: line-through;
+  margin-left: 0.5rem;
+}
+.pdp-shop-installment-hint {
+  font-size: 0.9rem;
+  color: #e11d48;
+  margin: 0.5rem 0 1rem;
+  font-weight: 600;
+}
+.pdp-shop-stock {
+  font-size: 0.875rem;
+  color: #16a34a;
+  margin-bottom: 1rem;
+}
+.pdp-shop-qty-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.pdp-shop-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+.pdp-shop-stepper button {
+  width: 40px;
+  height: 44px;
+  border: none;
+  background: #f1f5f9;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #334155;
+  transition: background 0.2s;
+}
+.pdp-shop-stepper button:hover {
+  background: #e2e8f0;
+}
+.pdp-shop-stepper input {
+  width: 56px;
+  height: 44px;
+  border: none;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+.pdp-shop-btn-buy {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #e11d48 0%, #be123c 100%);
+  color: #fff !important;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.35);
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.pdp-shop-btn-buy:hover {
+  color: #fff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(225, 29, 72, 0.45);
+}
+.pdp-shop-btn-buy small {
+  display: block;
+  font-weight: 500;
+  font-size: 0.72rem;
+  margin-top: 4px;
+  opacity: 0.95;
+}
+.pdp-shop-btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+.pdp-shop-btn-installment {
+  padding: 12px 10px;
+  border: 2px solid #fda4af;
+  border-radius: 10px;
+  background: #fff1f2;
+  color: #be123c !important;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1.25;
+  transition: border-color 0.2s, background 0.2s;
+}
+.pdp-shop-btn-installment:hover {
+  border-color: #e11d48;
+  background: #ffe4e6;
+  color: #be123c !important;
+}
+.pdp-shop-btn-installment small {
+  display: block;
+  font-weight: 500;
+  font-size: 0.65rem;
+  margin-top: 4px;
+  color: #64748b;
+}
+.pdp-shop-btn-cart {
+  padding: 12px 10px;
+  border: 2px solid #3b82f6;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1d4ed8 !important;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1.25;
+  transition: border-color 0.2s, background 0.2s;
+}
+.pdp-shop-btn-cart:hover {
+  border-color: #2563eb;
+  background: #dbeafe;
+  color: #1d4ed8 !important;
+}
+.pdp-shop-btn-cart small {
+  display: block;
+  font-weight: 500;
+  font-size: 0.65rem;
+  margin-top: 4px;
+  color: #64748b;
+}
+
+/* Nút xanh thay cho “trả góp qua thẻ” — Thêm vào giỏ hàng */
+.pdp-shop-btn-addcart {
+  padding: 12px 10px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1.25;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.pdp-shop-btn-addcart:hover {
+  color: #fff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+}
+.pdp-shop-btn-addcart small {
+  display: block;
+  font-weight: 500;
+  font-size: 0.65rem;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.9);
+}
