@@ -1,0 +1,6 @@
+feat: Giao diện thanh toán, giỏ hàng, chi tiết & lịch sử đơn hàng
+
+- Thanh toán: giao diện 2 bước, trường địa chỉ nhận hàng đơn
+- Giỏ hàng: card UI hiện đại, +/- số lượng và xóa hoạt động
+- Chi tiết đơn: layout 2 cột cân bằng, ảnh lớn, badge trạng thái
+- Lịch sử đơn: danh sách card, pill trạng thái, hủy đơn khi chờ
