@@ -623,6 +623,43 @@
   transform: scale(0.99);
 }
 
+.checkout-dtaa-sticky__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.checkout-dtaa-sticky__btn:disabled:hover,
+.checkout-dtaa-sticky__btn:disabled:active {
+  background: var(--ck-red);
+  transform: none;
+}
+
+.checkout-dtaa-sticky__btn--ghost:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.checkout-dtaa-sticky__warn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff3cd;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.checkout-dtaa-sticky__warn i {
+  color: #d97706;
+  flex-shrink: 0;
+}
+
 .checkout-dtaa-sticky__btn--ghost {
   background: #fff;
   color: var(--ck-red);

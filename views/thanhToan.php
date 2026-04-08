@@ -103,7 +103,7 @@ $uDc = htmlspecialchars($uDcRaw, ENT_QUOTES, 'UTF-8');
                             <h2 class="checkout-dtaa-section-title">Thông tin khách hàng</h2>
                             <div class="checkout-dtaa-cust-head">
                                 <div class="checkout-dtaa-cust-head__left">
-                                    <input class="checkout-dtaa-cust-name" type="text" id="ten_nguoi_nhan" name="ten_nguoi_nhan" required
+                                    <input class="checkout-dtaa-cust-name" type="text" id="ten_nguoi_nhan" name="ten_nguoi_nhan" required minlength="2" maxlength="120"
                                            value="<?= $uTen ?>" placeholder="Họ và tên" autocomplete="name" aria-label="Họ và tên">
                                     <span class="checkout-dtaa-badge" title="Khách hàng">KH</span>
                                 </div>
@@ -191,7 +191,7 @@ $uDc = htmlspecialchars($uDcRaw, ENT_QUOTES, 'UTF-8');
                         <div class="checkout-dtaa-card">
                             <h2 class="checkout-dtaa-section-title">Xác nhận</h2>
                             <label class="checkout-dtaa-terms">
-                                <input type="checkbox" id="terms" required>
+                                <input type="checkbox" id="terms" name="dong_y_dat_hang" value="1" required>
                                 <span>Tôi xác nhận thông tin giao hàng là chính xác và đồng ý đặt hàng theo chính sách của cửa hàng.</span>
                             </label>
                         </div>
@@ -203,7 +203,11 @@ $uDc = htmlspecialchars($uDcRaw, ENT_QUOTES, 'UTF-8');
                             <span>Tổng tiền tạm tính:</span>
                             <strong><?= formatPrice($tongDon) ?></strong>
                         </div>
-                        <button type="button" class="checkout-dtaa-sticky__btn" id="ck-btn-next">Tiếp tục</button>
+                        <p class="checkout-dtaa-sticky__warn" id="ck-warn-1" hidden>
+                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                            Vui lòng nhập đầy đủ thông tin bắt buộc trước khi tiếp tục.
+                        </p>
+                        <button type="button" class="checkout-dtaa-sticky__btn" id="ck-btn-next" disabled aria-disabled="true">Tiếp tục</button>
                     </div>
 
                     <!-- Chân trang bước 2 -->
@@ -212,8 +216,12 @@ $uDc = htmlspecialchars($uDcRaw, ENT_QUOTES, 'UTF-8');
                             <span>Tổng thanh toán:</span>
                             <strong><?= formatPrice($tongDon) ?></strong>
                         </div>
+                        <p class="checkout-dtaa-sticky__warn" id="ck-warn-2" hidden>
+                            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                            Vui lòng xác nhận thông tin và chọn phương thức thanh toán để đặt hàng.
+                        </p>
                         <button type="button" class="checkout-dtaa-sticky__btn checkout-dtaa-sticky__btn--ghost" id="ck-btn-back">Quay lại</button>
-                        <button type="submit" class="checkout-dtaa-sticky__btn" id="ck-btn-submit">Đặt hàng</button>
+                        <button type="submit" class="checkout-dtaa-sticky__btn" id="ck-btn-submit" disabled aria-disabled="true">Đặt hàng</button>
                     </div>
                 </form>
             </div>
@@ -234,7 +242,61 @@ $uDc = htmlspecialchars($uDcRaw, ENT_QUOTES, 'UTF-8');
   var f2 = document.getElementById('ck-footer-2');
   var btnNext = document.getElementById('ck-btn-next');
   var btnBack = document.getElementById('ck-btn-back');
+  var btnSubmit = document.getElementById('ck-btn-submit');
   var appTitle = document.getElementById('ck-app-title');
+  var termsEl = document.getElementById('terms');
+
+  function trimVal(id) {
+    var el = document.getElementById(id);
+    return el ? String(el.value).trim() : '';
+  }
+
+  function isMeaningfulAddress(s) {
+    if (s.length < 8) return false;
+    var stripped = s.replace(/[\s\-.,;:_/\\]+/g, '');
+    return stripped.length >= 5;
+  }
+
+  function isValidPhone(s) {
+    var digits = String(s).replace(/\D/g, '');
+    return digits.length >= 9 && digits.length <= 15;
+  }
+
+  /** Bước 1: đủ và hợp lệ (ghi chú không bắt buộc). */
+  function isPanel1Valid() {
+    var name = trimVal('ten_nguoi_nhan');
+    if (name.length < 2) return false;
+    var emailEl = document.getElementById('email_nguoi_nhan');
+    if (!emailEl) return false;
+    var email = String(emailEl.value).trim();
+    if (email === '' || !emailEl.checkValidity()) return false;
+    if (!isValidPhone(trimVal('sdt_nguoi_nhan'))) return false;
+    if (!isMeaningfulAddress(trimVal('dia_chi_nguoi_nhan'))) return false;
+    return true;
+  }
+
+  function hasPaymentMethod() {
+    return !!form.querySelector('input[name="phuong_thuc_thanh_toan_id"]:checked');
+  }
+
+  function canPlaceOrder() {
+    return isPanel1Valid() && termsEl && termsEl.checked && hasPaymentMethod();
+  }
+
+  function setBtnDisabled(btn, on) {
+    if (!btn) return;
+    btn.disabled = on;
+    btn.setAttribute('aria-disabled', on ? 'true' : 'false');
+  }
+
+  function refreshStickyButtons() {
+    setBtnDisabled(btnNext, !isPanel1Valid());
+    setBtnDisabled(btnSubmit, !canPlaceOrder());
+    var warn1 = document.getElementById('ck-warn-1');
+    var warn2 = document.getElementById('ck-warn-2');
+    if (warn1) warn1.hidden = isPanel1Valid();
+    if (warn2) warn2.hidden = termsEl && termsEl.checked && hasPaymentMethod();
+  }
 
   function setStep(n) {
     var isOne = n === 1;
@@ -247,17 +309,36 @@ $uDc = htmlspecialchars($uDcRaw, ENT_QUOTES, 'UTF-8');
     tab1.setAttribute('aria-selected', isOne ? 'true' : 'false');
     tab2.setAttribute('aria-selected', isOne ? 'false' : 'true');
     if (appTitle) appTitle.textContent = isOne ? 'Thông tin' : 'Thanh toán';
+    refreshStickyButtons();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function validatePanel1() {
-    var ids = ['ten_nguoi_nhan', 'email_nguoi_nhan', 'sdt_nguoi_nhan', 'dia_chi_nguoi_nhan'];
-    for (var i = 0; i < ids.length; i++) {
-      var el = document.getElementById(ids[i]);
-      if (el && !el.checkValidity()) {
-        el.reportValidity();
-        return false;
-      }
+  function validatePanel1WithHints() {
+    var ten = document.getElementById('ten_nguoi_nhan');
+    var emailEl = document.getElementById('email_nguoi_nhan');
+    var phone = document.getElementById('sdt_nguoi_nhan');
+    var addr = document.getElementById('dia_chi_nguoi_nhan');
+    if (ten && !ten.checkValidity()) { ten.reportValidity(); return false; }
+    if (emailEl && !emailEl.checkValidity()) { emailEl.reportValidity(); return false; }
+    if (phone && !phone.checkValidity()) { phone.reportValidity(); return false; }
+    if (addr && !addr.checkValidity()) { addr.reportValidity(); return false; }
+    if (trimVal('ten_nguoi_nhan').length < 2) {
+      ten.setCustomValidity('Vui lòng nhập họ và tên ít nhất 2 ký tự.');
+      ten.reportValidity();
+      ten.setCustomValidity('');
+      return false;
+    }
+    if (!isValidPhone(trimVal('sdt_nguoi_nhan'))) {
+      phone.setCustomValidity('Số điện thoại cần từ 9–15 chữ số.');
+      phone.reportValidity();
+      phone.setCustomValidity('');
+      return false;
+    }
+    if (!isMeaningfulAddress(trimVal('dia_chi_nguoi_nhan'))) {
+      addr.setCustomValidity('Vui lòng nhập địa chỉ đầy đủ (số nhà, đường, khu vực), không chỉ dấu gạch hoặc ký tự đơn.');
+      addr.reportValidity();
+      addr.setCustomValidity('');
+      return false;
     }
     return true;
   }
@@ -273,30 +354,52 @@ $uDc = htmlspecialchars($uDcRaw, ENT_QUOTES, 'UTF-8');
     ta.dataset.ckEnriched = '1';
   }
 
+  var step1Ids = ['ten_nguoi_nhan', 'email_nguoi_nhan', 'sdt_nguoi_nhan', 'dia_chi_nguoi_nhan'];
+  step1Ids.forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', refreshStickyButtons);
+      el.addEventListener('change', refreshStickyButtons);
+    }
+  });
+  if (termsEl) {
+    termsEl.addEventListener('change', refreshStickyButtons);
+  }
+  form.querySelectorAll('input[name="phuong_thuc_thanh_toan_id"]').forEach(function (r) {
+    r.addEventListener('change', refreshStickyButtons);
+  });
+
   tab1.addEventListener('click', function () { setStep(1); });
   tab2.addEventListener('click', function () {
-    if (validatePanel1()) setStep(2);
+    if (validatePanel1WithHints()) setStep(2);
   });
   if (btnNext) btnNext.addEventListener('click', function () {
-    if (validatePanel1()) setStep(2);
+    if (validatePanel1WithHints()) setStep(2);
   });
   if (btnBack) btnBack.addEventListener('click', function () { setStep(1); });
 
   form.addEventListener('submit', function (e) {
-    if (!validatePanel1()) {
+    if (!isPanel1Valid()) {
       e.preventDefault();
       setStep(1);
+      validatePanel1WithHints();
       return;
     }
-    var terms = document.getElementById('terms');
-    if (!terms || !terms.checked) {
+    if (!termsEl || !termsEl.checked) {
       e.preventDefault();
       setStep(2);
-      if (terms) terms.focus();
+      if (termsEl) termsEl.focus();
+      return;
+    }
+    if (!hasPaymentMethod()) {
+      e.preventDefault();
+      setStep(2);
       return;
     }
     enrichGhiChuOnce();
   });
+
+  refreshStickyButtons();
 })();
 </script>
 

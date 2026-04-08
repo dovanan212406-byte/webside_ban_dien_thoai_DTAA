@@ -386,16 +386,61 @@ class HomeController
         }
 
         $userId = (int) $_SESSION['user_client']['id'];
-            $tenNguoiNhan = trim($_POST['ten_nguoi_nhan'] ?? '');
-            $emailNguoiNhan = trim($_POST['email_nguoi_nhan'] ?? '');
-            $sdtNguoiNhan = trim($_POST['sdt_nguoi_nhan'] ?? '');
-            $diaChiNguoiNhan = trim($_POST['dia_chi_nguoi_nhan'] ?? '');
-        $ghiChu = trim($_POST['ghi_chu'] ?? '');
+        $tenNguoiNhan = trim((string) ($_POST['ten_nguoi_nhan'] ?? ''));
+        $emailNguoiNhan = trim((string) ($_POST['email_nguoi_nhan'] ?? ''));
+        $sdtNguoiNhan = trim((string) ($_POST['sdt_nguoi_nhan'] ?? ''));
+        $diaChiNguoiNhan = trim((string) ($_POST['dia_chi_nguoi_nhan'] ?? ''));
+        $ghiChu = trim((string) ($_POST['ghi_chu'] ?? ''));
         $tongTien = (int) ($_POST['tong_tien'] ?? 0);
         $phuongThucThanhToanId = (int) ($_POST['phuong_thuc_thanh_toan_id'] ?? 1);
+        $dongYDatHang = isset($_POST['dong_y_dat_hang']) && (string) $_POST['dong_y_dat_hang'] === '1';
+
+        if (!$dongYDatHang) {
+            $_SESSION['error_thanh_toan'] = 'Vui lòng xác nhận thông tin và tick đồng ý đặt hàng.';
+            header('Location: ' . BASE_URL . '?act=thanh-toan');
+            exit();
+        }
 
         if ($tenNguoiNhan === '' || $emailNguoiNhan === '' || $sdtNguoiNhan === '' || $diaChiNguoiNhan === '') {
             $_SESSION['error_thanh_toan'] = 'Vui lòng nhập đầy đủ thông tin người nhận.';
+            header('Location: ' . BASE_URL . '?act=thanh-toan');
+            exit();
+        }
+
+        if (function_exists('mb_strlen')) {
+            if (mb_strlen($tenNguoiNhan, 'UTF-8') < 2) {
+                $_SESSION['error_thanh_toan'] = 'Họ và tên cần ít nhất 2 ký tự.';
+                header('Location: ' . BASE_URL . '?act=thanh-toan');
+                exit();
+            }
+        } elseif (strlen($tenNguoiNhan) < 2) {
+            $_SESSION['error_thanh_toan'] = 'Họ và tên cần ít nhất 2 ký tự.';
+            header('Location: ' . BASE_URL . '?act=thanh-toan');
+            exit();
+        }
+
+        if (!filter_var($emailNguoiNhan, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error_thanh_toan'] = 'Email không hợp lệ.';
+            header('Location: ' . BASE_URL . '?act=thanh-toan');
+            exit();
+        }
+
+        $sdtDigits = preg_replace('/\D/', '', $sdtNguoiNhan);
+        if (strlen($sdtDigits) < 9 || strlen($sdtDigits) > 15) {
+            $_SESSION['error_thanh_toan'] = 'Số điện thoại cần từ 9 đến 15 chữ số.';
+            header('Location: ' . BASE_URL . '?act=thanh-toan');
+            exit();
+        }
+
+        $diaChiStripped = preg_replace('/[\s\-.,;:_\/\\\\]+/u', '', $diaChiNguoiNhan);
+        if (strlen($diaChiNguoiNhan) < 8 || strlen($diaChiStripped) < 5) {
+            $_SESSION['error_thanh_toan'] = 'Vui lòng nhập địa chỉ nhận hàng đầy đủ (số nhà, đường, khu vực).';
+            header('Location: ' . BASE_URL . '?act=thanh-toan');
+            exit();
+        }
+
+        if (!in_array($phuongThucThanhToanId, [1, 2], true)) {
+            $_SESSION['error_thanh_toan'] = 'Vui lòng chọn phương thức thanh toán hợp lệ.';
             header('Location: ' . BASE_URL . '?act=thanh-toan');
             exit();
         }
