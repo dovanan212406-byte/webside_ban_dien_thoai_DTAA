@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $authTab = $authTab ?? 'login';
-$loginUrl    = BASE_URL_ADMIN . '?act=login-admin';
+$loginUrl    = BASE_URL . '?act=login';
 $registerUrl = BASE_URL_ADMIN . '?act=dang-ky-admin';
 
 $errMsg = $_SESSION['error'] ?? null;
@@ -48,8 +48,8 @@ $old = $_SESSION['old_register_admin'] ?? [];
         <span>Phone Store</span>
       </div>
       <?php if ($authTab === 'login'): ?>
-        <h1>Đăng nhập khu vực quản trị</h1>
-        <p class="auth-lead">Truy cập an toàn để quản lý sản phẩm, đơn hàng và hỗ trợ khách hàng.</p>
+        <h1>Đăng nhập</h1>
+        <p class="auth-lead">Dùng cùng trang đăng nhập với cửa hàng. Sau khi đăng nhập, tài khoản quản trị sẽ vào khu vực quản lý tự động.</p>
         <ul class="auth-features">
           <li><i class="fas fa-check-circle" aria-hidden="true"></i><span>Bảo mật phiên đăng nhập</span></li>
           <li><i class="fas fa-check-circle" aria-hidden="true"></i><span>Quản lý đơn &amp; kho nhanh chóng</span></li>
@@ -88,7 +88,7 @@ $old = $_SESSION['old_register_admin'] ?? [];
           <div class="auth-alert auth-alert--danger"><?= htmlspecialchars($errDisplay) ?></div>
         <?php endif; ?>
 
-        <form action="<?= htmlspecialchars(BASE_URL_ADMIN) ?>?act=check-login-admin" method="post" autocomplete="off" class="auth-form-block">
+        <form action="<?= htmlspecialchars(BASE_URL) ?>?act=check-login" method="post" autocomplete="off" class="auth-form-block">
           <div class="auth-field">
             <label for="login-email">Email hoặc số điện thoại</label>
             <div class="auth-input-wrap">
@@ -112,7 +112,7 @@ $old = $_SESSION['old_register_admin'] ?? [];
         </form>
 
         <p class="auth-footer-link">
-          Chưa có tài khoản quản trị? <a href="<?= htmlspecialchars($registerUrl) ?>">Đăng ký ngay</a>
+          Cần tài khoản quản trị? <a href="<?= htmlspecialchars($registerUrl) ?>">Đăng ký quản trị</a> (chỉ dành cho nhân sự)
         </p>
 
       <?php else: ?>

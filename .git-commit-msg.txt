@@ -1,6 +1,7 @@
-feat: Giao diện thanh toán, giỏ hàng, chi tiết & lịch sử đơn hàng
+fix: Validation thanh toán - nút đặt hàng bị khóa khi chưa nhập đủ + cảnh báo vàng
 
-- Thanh toán: giao diện 2 bước, trường địa chỉ nhận hàng đơn
-- Giỏ hàng: card UI hiện đại, +/- số lượng và xóa hoạt động
-- Chi tiết đơn: layout 2 cột cân bằng, ảnh lớn, badge trạng thái
-- Lịch sử đơn: danh sách card, pill trạng thái, hủy đơn khi chờ
+- Nút Tiếp tục / Đặt hàng mặc định disabled, bật khi đủ điều kiện
+- Kiểm tra tên (≥2 ký tự), email hợp lệ, SĐT (9–15 chữ số), địa chỉ đầy đủ
+- Checkbox điều khoản + chọn phương thức thanh toán bắt buộc
+- Cảnh báo vàng hiện khi nút bị tắt ở mỗi bước
+- Server validation trùng logic với JS

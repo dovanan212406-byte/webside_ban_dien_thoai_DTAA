@@ -29,6 +29,10 @@ require_once './models/AdminVaiTro.php';
 // Route
 $act = $_GET['act'] ?? '/';
 
+$adminPublicActs = ['login-admin', 'check-login-admin', 'dang-ky-admin', 'check-dang-ky-admin', 'logout-admin'];
+if (!in_array($act, $adminPublicActs, true)) {
+    checkLoginAdmin();
+}
 
 // if ($act !== 'login-admin' && $act !== 'check-login-admin' && $act !== 'check-logout-admin') {
 //     // Kiểm tra đăng nhập admin
@@ -115,10 +119,6 @@ match ($act) {
     'dang-ky-admin'      => (new AdminTaiKhoanController())->formRegisterAdmin(),
     'check-dang-ky-admin'=> (new AdminTaiKhoanController())->postRegisterAdmin(),
     'logout-admin' => (new AdminTaiKhoanController())->logout(),
-    'logout-admin' => (new AdminTaiKhoanController())->logout(),
- 
-   
-    
 };
    
     

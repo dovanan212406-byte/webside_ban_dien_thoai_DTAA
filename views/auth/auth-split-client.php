@@ -31,42 +31,27 @@ if ($clientAuthTab === 'register') {
 
 $loginUrl = BASE_URL . '?act=login';
 $regUrl   = BASE_URL . '?act=dang-ky';
+$authAssetV = '20260408f';
+$baseAssets = rtrim(BASE_URL, '/') . '/';
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f0f1f3">
+  <meta name="theme-color" content="#fdf2f8">
   <title><?= htmlspecialchars($authPageTitle) ?> — DTAA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/vendor/font-awesome.min.css">
-  <link rel="stylesheet" href="assets/css/client-auth.css">
-  <link rel="icon" href="assets/img/logo/LOGO.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="<?= htmlspecialchars($baseAssets) ?>assets/css/vendor/font-awesome.min.css?v=<?= htmlspecialchars($authAssetV) ?>">
+  <link rel="stylesheet" href="<?= htmlspecialchars($baseAssets) ?>assets/css/client-auth.css?v=<?= htmlspecialchars($authAssetV) ?>">
+  <link rel="icon" href="<?= htmlspecialchars($baseAssets) ?>assets/img/logo/LOGO.png" type="image/png">
 </head>
 <body class="smember-auth-page">
+  <div class="smember-auth-bg" aria-hidden="true"></div>
 
-  <main class="smember-form-panel">
-    <!-- Visual aside panel -->
-    <aside class="smember-auth-visual" aria-hidden="true">
-      <div class="smember-auth-visual__inner">
-        <span class="smember-auth-visual__badge">DTAA Phone Store</span>
-        <h2 class="smember-auth-visual__title">
-          Mua sắm điện thoại<br>chính hãng giá tốt
-        </h2>
-        <p class="smember-auth-visual__text">
-          Hàng ngàn sản phẩm công nghệ cao cấp đang chờ bạn khám phá
-        </p>
-        <ul class="smember-auth-visual__dots">
-          <li></li>
-          <li></li>
-          <li></li>
-        </ul>
-      </div>
-    </aside>
-
+  <main class="smember-form-panel smember-form-panel--single">
     <!-- Auth content area -->
     <div class="smember-auth-content">
       <!-- Back link -->
@@ -75,20 +60,22 @@ $regUrl   = BASE_URL . '?act=dang-ky';
       </a>
 
       <div class="smember-form-wrap">
-        <!-- Tabs -->
-        <div class="smember-tabs smember-tabs--steps" role="tablist">
+        <!-- Tabs (pill) -->
+        <div class="smember-tabs-pill" role="tablist">
+          <div class="smember-tabs smember-tabs--steps" role="presentation">
           <a href="<?= htmlspecialchars($loginUrl) ?>"
              class="smember-tab <?= $clientAuthTab === 'login' ? 'is-active' : '' ?>"
              role="tab" aria-selected="<?= $clientAuthTab === 'login' ? 'true' : 'false' ?>">
-            <span class="smember-tab__step">1</span>
-            <span class="smember-tab__label"> Đăng nhập</span>
+            <span class="smember-tab__icon" aria-hidden="true"><i class="fa fa-sign-in"></i></span>
+            <span class="smember-tab__label">Đăng nhập</span>
           </a>
           <a href="<?= htmlspecialchars($regUrl) ?>"
              class="smember-tab <?= $clientAuthTab === 'register' ? 'is-active' : '' ?>"
              role="tab" aria-selected="<?= $clientAuthTab === 'register' ? 'true' : 'false' ?>">
-            <span class="smember-tab__step">2</span>
-            <span class="smember-tab__label"> Đăng ký</span>
+            <span class="smember-tab__icon" aria-hidden="true"><i class="fa fa-user-plus"></i></span>
+            <span class="smember-tab__label">Đăng ký</span>
           </a>
+          </div>
         </div>
 
       <!-- ========== LOGIN ========== -->
@@ -96,6 +83,7 @@ $regUrl   = BASE_URL . '?act=dang-ky';
         <div class="smember-form-box" role="tabpanel">
           <header class="smember-form-head smember-form-head--tight">
             <h1 class="smember-form-title">Đăng nhập</h1>
+            <p class="smember-form-sub">Chào mừng bạn quay lại DTAA Phone Store</p>
           </header>
 
           <?php if ($justRegistered): ?>
@@ -163,6 +151,7 @@ $regUrl   = BASE_URL . '?act=dang-ky';
         <div class="smember-form-box" role="tabpanel">
           <header class="smember-form-head smember-form-head--tight">
             <h1 class="smember-form-title">Đăng ký</h1>
+            <p class="smember-form-sub">Tạo tài khoản để đặt hàng và theo dõi đơn dễ dàng</p>
           </header>
 
           <?php if (!empty($errRegList)): ?>

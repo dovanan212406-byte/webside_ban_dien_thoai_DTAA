@@ -262,7 +262,6 @@ $uDc = htmlspecialchars($uDcRaw, ENT_QUOTES, 'UTF-8');
     return digits.length >= 9 && digits.length <= 15;
   }
 
-  /** Bước 1: đủ và hợp lệ (ghi chú không bắt buộc). */
   function isPanel1Valid() {
     var name = trimVal('ten_nguoi_nhan');
     if (name.length < 2) return false;

@@ -20,8 +20,8 @@ require_once './models/AdminTaiKhoan.php';
 // Route
 $act = $_GET['act'] ?? '/';
 
-if($act!== 'login-admin'&& $act!=='check-login-admin' && $act!=='check-logout-admin'){
-    // Kiểm tra đăng nhập admin
+$adminPublicActs = ['login-admin', 'check-login-admin', 'dang-ky-admin', 'check-dang-ky-admin', 'logout-admin'];
+if (!in_array($act, $adminPublicActs, true)) {
     checkLoginAdmin();
 }
 
@@ -29,12 +29,12 @@ if($act!== 'login-admin'&& $act!=='check-login-admin' && $act!=='check-logout-ad
 
 match ($act) {
     // route danh mục
-    'danh-muc' => (new AdminDanhMucController())->danhSachDanhMuc(),
-    'form-them-danh-muc' => (new AdminDanhMucController())->formAddDanhMuc(),
-    'them-danh-muc' => (new AdminDanhMucController())->postAddDanhMuc(),
-    'form-sua-danh-muc' => (new AdminDanhMucController())->formEditDanhMuc(),
-    'sua-danh-muc' => (new AdminDanhMucController())->postEditDanhMuc(),
-    'xoa-danh-muc' => (new AdminDanhMucController())->deleteDanhMuc(),
+    'danh-muc' => (new AdminCategoryController())->listCategory(),
+    'form-them-danh-muc' => (new AdminCategoryController())->formAddCategory(),
+    'them-danh-muc' => (new AdminCategoryController())->postAddCategory(),
+    'form-sua-danh-muc' => (new AdminCategoryController())->formEditCategory(),
+    'sua-danh-muc' => (new AdminCategoryController())->postEditCategory(),
+    'xoa-danh-muc' => (new AdminCategoryController())->deleteCategory(),
 
     // route Sản phẩm
     'san-pham' => (new AdminSanPhamController())->danhSachSanPham(),
@@ -43,8 +43,7 @@ match ($act) {
     'form-sua-san-pham' => (new AdminSanPhamController())->formEditSanPham(),
     'sua-san-pham' => (new AdminSanPhamController())->postEditSanPham(),
     'xoa-san-pham' => (new AdminSanPhamController())->deleteSanPham(),
-    'sua-album-anh-san-pham' => (new AdminSanPhamController())->postEditAnhSanPham(),
-    'chi-tiet-san-pham' => (new AdminSanPhamController())->detailSanPham(),
+    'chi-tiet-san-pham' => (new AdminSanPhamController())->chiTietSanPham(),
 
 
      // route đơn hàng
@@ -79,8 +78,10 @@ match ($act) {
         'sua-mat-khau-ca-nhan-quan-tri'=>(new AdminTaiKhoanController())->postEditMatKhauCaNhan(),
 
 
-        //route login 
-        'login-admin'=> (new AdminTaiKhoanController())->formLogin(),
-        'check-login-admin'=> (new AdminTaiKhoanController())->login(),
+        //route login — chuyển hướng về trang đăng nhập chung
+        'login-admin'=> function() { header('Location: ' . BASE_URL . '?act=login'); exit(); },
+        'check-login-admin'=> function() { header('Location: ' . BASE_URL . '?act=login'); exit(); },
+        'dang-ky-admin'=> (new AdminTaiKhoanController())->formRegisterAdmin(),
+        'check-dang-ky-admin'=> (new AdminTaiKhoanController())->postRegisterAdmin(),
         'logout-admin'=> (new AdminTaiKhoanController())->logout(),
 };

@@ -18,55 +18,20 @@ class AdminTaiKhoanController
     // ============================================================
 
     public function formLoginAdmin() {
-        if (isset($_SESSION['user_admin'])) {
-            header("Location: " . BASE_URL_ADMIN);
-            exit();
-        }
-        $authTab = 'login';
-        require_once './views/auth/auth.php';
+        header('Location: ' . BASE_URL . '?act=login');
+        exit();
     }
 
     public function postLoginAdmin()
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $email = $_POST['email'] ?? '';
-            $password = $_POST['password'] ?? '';
-
-            $user = $this->modelTaiKhoan->checkLogin($email, $password);
-
-            // checkLogin trả: false=ko có tk | string=sai mk | array=đúng mk
-            if (is_array($user) && (int) $user['role_id'] === 1) {
-                $_SESSION['user_admin'] = [
-                    'id' => $user['id'],
-                    'email' => $user['email'],
-                    'full_name' => $user['full_name']
-                ];
-                header("Location: " . BASE_URL_ADMIN);
-                exit();
-            }
-
-            if (is_array($user) && (int) $user['role_id'] !== 1) {
-                $_SESSION['error'] = 'Tài khoản này không có quyền truy cập khu vực quản trị. Vui lòng đăng nhập bằng tài khoản Admin hoặc đăng ký tài khoản quản trị mới.';
-                header("Location: " . BASE_URL_ADMIN . '?act=login-admin');
-                exit();
-            }
-
-            if (is_string($user)) {
-                $_SESSION['error'] = $user;
-            } elseif ($user === false) {
-                $_SESSION['error'] = 'Không tìm thấy tài khoản với email hoặc số điện thoại này.';
-            } else {
-                $_SESSION['error'] = 'Email hoặc mật khẩu không chính xác!';
-            }
-            header("Location: " . BASE_URL_ADMIN . '?act=login-admin');
-            exit();
-        }
+        header('Location: ' . BASE_URL . '?act=login');
+        exit();
     }
 
     public function logout()
     {
         unset($_SESSION['user_admin']);
-        header("Location: " . BASE_URL_ADMIN . '?act=login-admin');
+        header('Location: ' . BASE_URL . '?act=login');
         exit();
     }
 
@@ -115,7 +80,7 @@ class AdminTaiKhoanController
                 $check = $this->modelTaiKhoan->insertTaiKhoan($ho_ten, $email, $so_dien_thoai, 'Hà Nội', $hash_pass, 1, 1);
 
                 if ($check) {
-                    header("Location: " . BASE_URL_ADMIN . "?act=login-admin&registered=1");
+                    header('Location: ' . BASE_URL . '?act=login&registered=1');
                     exit();
                 } else {
                     $errors[] = "Email hoặc số điện thoại đã tồn tại.";
@@ -134,7 +99,7 @@ class AdminTaiKhoanController
 
     public function formEditCaNhanQuanTri() {
         if (!isset($_SESSION['user_admin'])) {
-            header("Location: " . BASE_URL_ADMIN . "?act=login-admin");
+            header('Location: ' . BASE_URL . '?act=login');
             exit();
         }
 
@@ -215,19 +180,46 @@ class AdminTaiKhoanController
  public function postAddQuanTri()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Lấy dữ liệu từ form
-            $full_name = $_POST['full_name'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $phone = $_POST['phone'] ?? '';
-            $address = $_POST['address'] ?? '';
+            // Kiểm tra đã đăng nhập admin chưa
+            if (!isset($_SESSION['user_admin']) || !isset($_SESSION['user_admin']['id'])) {
+                header('Location: ' . BASE_URL . '?act=login');
+                exit();
+            }
             
+            // Lấy dữ liệu từ form
+            $full_name = trim($_POST['full_name'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $phone = trim($_POST['phone'] ?? '');
+            $address = trim($_POST['address'] ?? 'Hà Nội');
+            
+            // Validation
+            $errors = [];
+            if (empty($full_name)) {
+                $errors[] = "Họ và tên không được để trống";
+            }
+            if (empty($email)) {
+                $errors[] = "Email không được để trống";
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = "Email không hợp lệ";
+            }
+            if (empty($phone)) {
+                $errors[] = "Số điện thoại không được để trống";
+            }
+
+            // Lưu dữ liệu cũ nếu có lỗi
+            if (!empty($errors)) {
+                $_SESSION['error'] = $errors;
+                $_SESSION['old_add'] = $_POST;
+                header("Location: " . BASE_URL_ADMIN . "?act=form-them-quan-tri");
+                exit();
+            }
+
             // Password mặc định là 123456 và role_id = 1 (Quản trị)
             $password = password_hash('123456', PASSWORD_BCRYPT);
             $role_id = 1; 
             $status = 1;
 
             // Gọi model để thêm mới
-            // Lưu ý: Tên hàm insertTaiKhoan phải khớp với trong Model AdminTaiKhoan của bạn
             $check = $this->modelTaiKhoan->insertTaiKhoan(
                 $full_name,
                 $email,
@@ -239,16 +231,32 @@ class AdminTaiKhoanController
             );
 
             if ($check) {
+                $_SESSION['success'] = "Tạo tài khoản quản trị viên thành công! Mật khẩu mặc định: 123456";
                 header("Location: " . BASE_URL_ADMIN . "?act=list-tai-khoan-quan-tri");
                 exit();
             } else {
-                echo "Có lỗi xảy ra khi thêm tài khoản!";
-                die();
+                $_SESSION['error'] = ["Email hoặc số điện thoại đã tồn tại trong hệ thống"];
+                $_SESSION['old_add'] = $_POST;
+                header("Location: " . BASE_URL_ADMIN . "?act=form-them-quan-tri");
+                exit();
             }
         }
     }
     public function formAddQuanTri() {
+        // Kiểm tra đã đăng nhập admin chưa
+        if (!isset($_SESSION['user_admin'])) {
+            header('Location: ' . BASE_URL . '?act=login');
+            exit();
+        }
+        // Kiểm tra session admin có đầy đủ thông tin id không
+        if (!isset($_SESSION['user_admin']['id'])) {
+            header('Location: ' . BASE_URL . '?act=login');
+            exit();
+        }
+        
         require_once './views/taikhoan/quantri/addQuanTri.php';
+        // Xóa dữ liệu cũ khi load form
+        unset($_SESSION['old_add']);
     }
 
     // Bổ sung hàm formEditQuanTri (act trong index.php yêu cầu)

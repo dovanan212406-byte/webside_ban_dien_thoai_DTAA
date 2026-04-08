@@ -1,4 +1,5 @@
 <?php
+
 class TaiKhoan
 {
     public $conn;
@@ -23,7 +24,7 @@ class TaiKhoan
 
     /**
      * Đăng nhập khách: email (có @) hoặc số điện thoại.
-     * Trả về email chuẩn hoá khi thành công (đồng bộ session / getTaiKhoanFormEmail).
+     * Trả về email chuẩn hoá khi thành công (chỉ khách role_id = 2).
      */
     public function checkLoginClient($identifier, $mat_khau)
     {
@@ -38,6 +39,87 @@ class TaiKhoan
         return $this->checkLoginByPhone($id, $mat_khau);
     }
 
+    /**
+     * Đăng nhập thống nhất (admin role_id=1, khách role_id=2).
+     * Thành công: ['ok'=>true,'role_id'=>int,'id'=>int,'email'=>string,'full_name'=>string]
+     * Thất bại: chuỗi thông báo.
+     */
+    public function checkLoginUnified(string $identifier, string $mat_khau)
+    {
+        $id = trim($identifier);
+        if ($id === '' || $mat_khau === '') {
+            return 'Vui lòng nhập email hoặc số điện thoại và mật khẩu.';
+        }
+
+        try {
+            $user = null;
+            if (str_contains($id, '@')) {
+                $emailNorm = strtolower($id);
+                $sql = 'SELECT * FROM users WHERE LOWER(TRIM(email)) = :email LIMIT 1';
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute([':email' => $emailNorm]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                $digits = preg_replace('/\D/', '', $id);
+                if ($digits === '' || strlen($digits) < 9) {
+                    return 'Sai email/số điện thoại hoặc mật khẩu.';
+                }
+                $sql = "SELECT * FROM users WHERE REPLACE(REPLACE(REPLACE(TRIM(COALESCE(phone, '')), ' ', ''), '-', ''), '.', '') = :p LIMIT 1";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute([':p' => $digits]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            }
+
+            if (!$user) {
+                return 'Sai email/số điện thoại hoặc mật khẩu.';
+            }
+
+            $stored = $user['password'] ?? '';
+            $ok = $stored !== '' && (password_verify($mat_khau, $stored) || hash_equals($stored, $mat_khau));
+            if (!$ok) {
+                return 'Sai email/số điện thoại hoặc mật khẩu.';
+            }
+
+            if ((int) ($user['status'] ?? 0) !== 1) {
+                return 'Tài khoản bị cấm hoặc chưa được kích hoạt.';
+            }
+
+            $roleId = (int) ($user['role_id'] ?? 0);
+            if ($roleId !== 1 && $roleId !== 2) {
+                return 'Tài khoản không được phép đăng nhập.';
+            }
+
+            return [
+                'ok' => true,
+                'role_id' => $roleId,
+                'id' => (int) $user['id'],
+                'email' => (string) ($user['email'] ?? ''),
+                'phone' => (string) ($user['phone'] ?? ''),
+                'full_name' => (string) ($user['full_name'] ?? ''),
+            ];
+        } catch (Exception $e) {
+            error_log('TaiKhoan::checkLoginUnified: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
+    public function getTaiKhoanById(int $userId)
+    {
+        try {
+            $sql = 'SELECT * FROM users WHERE id = :id LIMIT 1';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':id' => $userId]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $row ? self::rowClient($row) : false;
+        } catch (Exception $e) {
+            error_log('TaiKhoan::getTaiKhoanById: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
     public function checkLogin($email, $mat_khau)
     {
         try {
@@ -45,7 +127,7 @@ class TaiKhoan
             $sql = 'SELECT * FROM users WHERE LOWER(TRIM(email)) = :email LIMIT 1';
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':email' => $emailNorm]);
-            $user = $stmt->fetch();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$user) {
                 return 'Bạn nhập sai thông tin mật khẩu hoặc tài khoản';
@@ -68,7 +150,7 @@ class TaiKhoan
 
             return 'Bạn nhập sai thông tin mật khẩu hoặc tài khoản';
         } catch (Exception $e) {
-            echo 'lỗi: ' . $e->getMessage();
+            error_log('TaiKhoan::checkLogin: ' . $e->getMessage());
 
             return false;
         }
@@ -85,7 +167,7 @@ class TaiKhoan
             $sql = "SELECT * FROM users WHERE REPLACE(REPLACE(REPLACE(TRIM(COALESCE(phone, '')), ' ', ''), '-', ''), '.', '') = :p LIMIT 1";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':p' => $digits]);
-            $user = $stmt->fetch();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$user) {
                 return 'Bạn nhập sai thông tin mật khẩu hoặc tài khoản';
@@ -108,7 +190,7 @@ class TaiKhoan
 
             return 'Bạn nhập sai thông tin mật khẩu hoặc tài khoản';
         } catch (Exception $e) {
-            echo 'lỗi: ' . $e->getMessage();
+            error_log('TaiKhoan::checkLoginByPhone: ' . $e->getMessage());
 
             return false;
         }
@@ -121,11 +203,13 @@ class TaiKhoan
             $sql = 'SELECT * FROM users WHERE LOWER(TRIM(email)) = :email LIMIT 1';
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':email' => $emailNorm]);
-            $row = $stmt->fetch();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             return $row ? self::rowClient($row) : false;
         } catch (Exception $e) {
-            echo 'Lỗi' . $e->getMessage();
+            error_log('TaiKhoan::getTaiKhoanFormEmail: ' . $e->getMessage());
+
+            return false;
         }
     }
 
@@ -167,7 +251,7 @@ class TaiKhoan
 
     /**
      * Đăng ký khách hàng (role_id = 2, status = 1) — bảng users.
-     * Email có thể rỗng (SMEMBER: đăng ký bằng số điện thoại).
+     * Email có thể rỗng (đăng ký bằng số điện thoại).
      */
     public function dangKyKhach($ho_ten, $email, $so_dien_thoai, $mat_khau, $dia_chi = '')
     {
@@ -186,6 +270,25 @@ class TaiKhoan
                 ':password' => $hash,
             ]);
         } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /** Cập nhật thông tin khách hàng (full_name, phone, address). */
+    public function capNhatThongTinKhachHang($id, $full_name, $phone, $address)
+    {
+        try {
+            $sql = 'UPDATE users SET full_name = :full_name, phone = :phone, address = :address WHERE id = :id AND role_id = 2';
+            $stmt = $this->conn->prepare($sql);
+            return $stmt->execute([
+                ':full_name' => $full_name,
+                ':phone' => $phone,
+                ':address' => $address,
+                ':id' => (int) $id,
+            ]);
+        } catch (Exception $e) {
+            error_log('TaiKhoan::capNhatThongTinKhachHang: ' . $e->getMessage());
+
             return false;
         }
     }

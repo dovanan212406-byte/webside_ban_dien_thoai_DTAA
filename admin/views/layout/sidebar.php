@@ -189,6 +189,12 @@
           </a>
         </li>
         <li>
+          <a href="<?= BASE_URL_ADMIN . '?act=form-them-quan-tri' ?>" class="flex items-center gap-3 pl-11 pr-4 py-2.5 hover:text-white hover:bg-indigo-500 rounded-lg transition text-sm text-indigo-100">
+            <i class="fa-solid fa-user-plus text-green-400 text-xs"></i>
+            Thêm quản trị viên
+          </a>
+        </li>
+        <li>
           <a href="<?= BASE_URL_ADMIN . '?act=list-tai-khoan-khach-hang' ?>" class="flex items-center gap-3 pl-11 pr-4 py-2.5 hover:text-white hover:bg-indigo-500 rounded-lg transition text-sm text-indigo-100">
             <i class="fa-solid fa-users text-blue-300 text-xs"></i>
             Tài khoản Khách hàng

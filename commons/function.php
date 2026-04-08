@@ -18,8 +18,10 @@ function connectDB() {
     
         return $conn;
     } catch (PDOException $e) {
-        echo ("Connection failed: " . $e->getMessage());
+        error_log('connectDB: ' . $e->getMessage());
     }
+
+    return null;
 }
 function uploadFile($file,$folderUpload){
     $pathStorage=$folderUpload . time() . $file['name'];
@@ -41,15 +43,10 @@ function deleteFile($file){
 
 // xoa session sau khi load trang    
 function deleteSessionError(){
-    if(isset($_SESSION['flash'])){
-        // huy session sau khi tai trang
+    if (isset($_SESSION['flash'])) {
         unset($_SESSION['flash']);
         unset($_SESSION['error']);
-        // session_unset();
-        // session_destroy();
     }
-
-
 }
 function uploadFileAlbum($file,$folderUpload, $key){
     $pathStorage=$folderUpload . time() . $file['name'][$key];
@@ -64,11 +61,23 @@ function uploadFileAlbum($file,$folderUpload, $key){
 }
 function checkLoginAdmin(){
     if(!isset($_SESSION['user_admin'])){
-        header('Location: '.BASE_URL_ADMIN  . '?act=login-admin');
+        header('Location: ' . BASE_URL . '?act=login');
         exit();
     }
 
 }
 function formatPrice($price){
     return number_format($price, 0, ',', '.');
+}
+function donHangCoTheHuy($trangThaiId): bool
+{
+    $id = (int) $trangThaiId;
+    if (defined('TRANG_THAI_DON_HUY') && $id === (int) TRANG_THAI_DON_HUY) {
+        return false;
+    }
+    if (defined('TRANG_THAI_DON_HOAN_THANH') && $id === (int) TRANG_THAI_DON_HOAN_THANH) {
+        return false;
+    }
+    $allowed = defined('TRANG_THAI_DUOC_HUY_BOI_KHACH') ? TRANG_THAI_DUOC_HUY_BOI_KHACH : [1];
+    return in_array($id, (array) $allowed, true);
 }

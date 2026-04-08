@@ -31,9 +31,8 @@ $countComment = isset($listBinhLuan) ? count($listBinhLuan) : 0;
                     <div class="breadcrumb-wrap">
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="<?= BASE_URL ?>"><i class="fa fa-home"></i></a>
-                                </li>
-                                <li class="breadcrumb-item"><a href="shop.html">Sản phẩm</a></li>
+                                <li class="breadcrumb-item"><a href="<?= BASE_URL ?>"><i class="fa fa-home"></i></a></li>
+                                <li class="breadcrumb-item"><a href="<?= BASE_URL ?>">Sản phẩm</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm</li>
                             </ul>
                         </nav>
@@ -156,7 +155,6 @@ $countComment = isset($listBinhLuan) ? count($listBinhLuan) : 0;
                             <div class="col-lg-12">
                                 <div class="product-review-info">
                                     <ul class="nav review-tab">
-
                                         <li>
                                             <a class="active" data-bs-toggle="tab" href="#tab_three">Bình luận
                                                 (<?= $countComment ?>)</a>
@@ -170,7 +168,6 @@ $countComment = isset($listBinhLuan) ? count($listBinhLuan) : 0;
                                                         <img src="<?= $binhLuan['avatar'] ?>" alt="">
                                                     </div>
                                                     <div class="review-box">
-
                                                         <div class="post-author">
                                                             <p><span>Khách hàng-</span><?= $binhLuan['review_date'] ?></p>
                                                         </div>
@@ -184,14 +181,12 @@ $countComment = isset($listBinhLuan) ? count($listBinhLuan) : 0;
                                                         <label class="col-form-label"><span class="text-danger">*</span>
                                                             Bình luận của bạn</label>
                                                         <textarea class="form-control" required></textarea>
-
                                                     </div>
                                                 </div>
-
                                                 <div class="buttons">
                                                     <button class="btn btn-sqr" type="submit">Bình luận</button>
                                                 </div>
-                                            </form> <!-- end of review-form -->
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -211,19 +206,19 @@ $countComment = isset($listBinhLuan) ? count($listBinhLuan) : 0;
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <!-- section title start -->
                     <div class="section-title text-center">
                         <h2 class="title">Sản phẩm liên quan</h2>
                     </div>
-                    <!-- section title start -->
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
                     <div class="product-carousel-4 slick-row-10 slick-arrow-style">
-                        <!-- product item start -->
-                        <?php foreach ($listSanPhamCungDanhMuc as $key => $spLienQuan): ?>
-
+                        <?php foreach ($listSanPhamCungDanhMuc as $key => $spLienQuan):
+                            $ngayNhap = new DateTime($spLienQuan['import_date']);
+                            $ngayHienTai = new DateTime();
+                            $tinhNgay = $ngayHienTai->diff($ngayNhap);
+                            ?>
                             <div class="product-item">
                                 <figure class="product-thumb">
                                     <a href="<?= BASE_URL . '?act=chi-tiet-san-pham&id_san_pham=' . $spLienQuan['id']; ?>">
@@ -231,61 +226,32 @@ $countComment = isset($listBinhLuan) ? count($listBinhLuan) : 0;
                                         <img class="sec-img" src="<?= $spLienQuan['image'] ?>" alt="product">
                                     </a>
                                     <div class="product-badge">
-                                        <?php
-                                        $ngayNhap = new DateTime($spLienQuan['import_date']);
-                                        $ngayHienTai = new DateTime();
-                                        $tinhNgay = $ngayHienTai->diff($ngayNhap);
-
-                                        if ($tinhNgay->days <= 7) {
-                                            ?>
-                                            <div class="product-label new">
-                                                <span>Mới</span>
-                                            </div>
-                                            <?php
-                                        }
-                                        ?>
-
-                                        <?php
-                                        if ($spLienQuan['discount_price']) {
-                                            ?>
-
-                                            <div class="product-label discount">
-                                                <span>Giảm giá sâu</span>
-                                            </div>
-
-                                            <?php
-                                        }
-                                        ?>
+                                        <?php if ($tinhNgay->days <= 7): ?>
+                                            <div class="product-label new"><span>Mới</span></div>
+                                        <?php endif; ?>
+                                        <?php if ($spLienQuan['discount_price']): ?>
+                                            <div class="product-label discount"><span>Giảm giá sâu</span></div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="cart-hover">
                                         <button class="btn btn-cart">Xem chi tiết</button>
                                     </div>
                                 </figure>
                                 <div class="product-caption text-center">
-
                                     <h6 class="product-name">
-                                        <a
-                                            href="<?= BASE_URL . '?act=chi-tiet-san-pham&id_san_pham=' . $spLienQuan['id']; ?>"><?= $spLienQuan['name'] ?></a>
+                                        <a href="<?= BASE_URL . '?act=chi-tiet-san-pham&id_san_pham=' . $spLienQuan['id']; ?>"><?= $spLienQuan['name'] ?></a>
                                     </h6>
                                     <div class="price-box">
                                         <?php if ($spLienQuan['discount_price']) { ?>
-                                            <span
-                                                class="price-regular"><?= formatPrice($spLienQuan['discount_price']) . 'VNĐ'; ?></span>
-                                            <span
-                                                class="price-old"><del><?= formatPrice($spLienQuan['price']) . 'VNĐ'; ?></del></span>
+                                            <span class="price-regular"><?= formatPrice($spLienQuan['discount_price']) . 'VNĐ'; ?></span>
+                                            <span class="price-old"><del><?= formatPrice($spLienQuan['price']) . 'VNĐ'; ?></del></span>
                                         <?php } else { ?>
-                                            <span
-                                                class="price-regular"><?= formatPrice($spLienQuan['price']) . 'VNĐ'; ?></span>
+                                            <span class="price-regular"><?= formatPrice($spLienQuan['price']) . 'VNĐ'; ?></span>
                                         <?php } ?>
                                     </div>
                                 </div>
                             </div>
-                            <!-- product item end -->
                         <?php endforeach; ?>
-
-                        <!-- product item end -->
-
-
                     </div>
                 </div>
             </div>
@@ -301,8 +267,7 @@ $countComment = isset($listBinhLuan) ? count($listBinhLuan) : 0;
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="mb-0">Vui lòng liên hệ hotline cửa hàng hoặc đến trực tiếp để được tư vấn trả góp và thủ tục
-                        xét duyệt.</p>
+                    <p class="mb-0">Vui lòng liên hệ hotline cửa hàng hoặc đến trực tiếp để được tư vấn trả góp và thủ tục xét duyệt.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -340,10 +305,5 @@ $countComment = isset($listBinhLuan) ? count($listBinhLuan) : 0;
     });
 })();
 </script>
-<!-- Quick view modal start -->
-
-<!-- Quick view modal end -->
-
-
 
 <?php require_once 'layout/footer.php'; ?>

@@ -6152,6 +6152,39 @@ blockquote {
 .client-header-auth-pills .client-pill-login i {
   font-size: 12px;
 }
+
+/* Quản trị: cùng pill Đăng ký, chỉ đổi gradient tím */
+.client-header-auth-pills .client-pill-register.client-pill--quan-tri {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+}
+.client-header-auth-pills .client-pill-register.client-pill--quan-tri:hover {
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.4);
+  filter: brightness(1.04);
+}
+
+/* Đè rule .header-configure-area ul li a (font lớn / màu đen) */
+.header-area .header-configure-area ul.client-header-toolbar li.client-header-auth-pills a.client-pill-register.client-pill--quan-tri {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 6px 14px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%) !important;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3) !important;
+}
+.header-area .header-configure-area ul.client-header-toolbar li.client-header-auth-pills a.client-pill-register.client-pill--quan-tri:hover {
+  color: #fff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.4) !important;
+  filter: brightness(1.04);
+}
 @media only screen and (max-width: 575.98px) {
   .client-pill-login span.label,
   .client-pill-register span.label {
@@ -6161,5 +6194,9 @@ blockquote {
   .client-header-auth-pills .client-pill-login {
     min-height: 36px;
     padding: 6px 10px;
+  }
+  .header-area .header-configure-area ul.client-header-toolbar li.client-header-auth-pills a.client-pill-register.client-pill--quan-tri {
+    min-height: 36px;
+    padding: 6px 10px !important;
   }
 }

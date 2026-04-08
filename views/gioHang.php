@@ -51,16 +51,6 @@ $hasItems = $loggedIn && count($chiTietGioHang) > 0;
 
     <div class="cart-main-wrapper section-padding">
         <div class="container">
-            <div class="cart-page__toolbar">
-                <a class="cart-page__back" href="<?= htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8') ?>" aria-label="Về trang chủ"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-                <div class="cart-page__toolbar-center">
-                    <h1 class="cart-page__title">Giỏ hàng của bạn</h1>
-                    <?php if ($hasItems): ?>
-                        <span class="cart-page__badge"><?= (int) $tongSoLuong ?> sản phẩm</span>
-                    <?php endif; ?>
-                </div>
-            </div>
-
             <?php if (!$loggedIn): ?>
                 <div class="cart-page__empty">
                     <i class="fa fa-shopping-cart" aria-hidden="true"></i>

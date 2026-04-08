@@ -32,11 +32,6 @@ $huyAction = htmlspecialchars(BASE_URL . '?act=huy-don-hang', ENT_QUOTES, 'UTF-8
 
     <div class="cart-main-wrapper oh-section">
         <div class="container">
-            <header class="oh-toolbar">
-                <h1>Lịch sử đơn hàng</h1>
-                <p>Theo dõi trạng thái thanh toán và giao hàng — cửa hàng điện thoại DTAA.</p>
-            </header>
-
             <?php if (count($donHangs) === 0): ?>
                 <div class="oh-empty">
                     <i class="fa fa-shopping-bag" aria-hidden="true"></i>
